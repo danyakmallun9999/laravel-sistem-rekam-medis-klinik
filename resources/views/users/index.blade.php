@@ -90,10 +90,10 @@
                                         <div class="flex justify-end gap-3">
                                             <a href="{{ route('users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                             @if($user->id !== auth()->id())
-                                                <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');" class="inline">
+                                                <form id="delete-form-{{ $user->id }}" action="{{ route('users.destroy', $user) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                                    <button type="button" onclick="confirmDelete(event, 'delete-form-{{ $user->id }}')" class="text-red-600 hover:text-red-900">Delete</button>
                                                 </form>
                                             @endif
                                         </div>
