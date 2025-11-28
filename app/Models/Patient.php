@@ -41,9 +41,7 @@ class Patient extends Model
     {
         return $this->hasMany(Invoice::class);
     }
-    protected $casts = [
-        'nik' => 'encrypted',
-    ];
+    protected $casts = [];
 
 
 }

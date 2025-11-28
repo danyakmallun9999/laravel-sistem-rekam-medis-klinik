@@ -13,9 +13,11 @@ class PatientController extends Controller
 
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where('name', 'like', "%{$search}%");
-            // Note: Cannot search encrypted NIK with LIKE
-            // ->orWhere('nik', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('nik', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
         }
 
         $patients = $query->latest()->paginate(10);
