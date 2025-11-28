@@ -18,6 +18,7 @@ class MedicalRecord extends Model
         'icd10_name',
         'icd9_code',
         'icd9_name',
+        'body_map_data',
     ];
 
     protected $casts = [
@@ -25,6 +26,7 @@ class MedicalRecord extends Model
         'soap_data' => 'array',
         'vital_signs' => 'array',
         'attachments' => 'array',
+        'body_map_data' => 'array',
     ];
 
     public function patient()

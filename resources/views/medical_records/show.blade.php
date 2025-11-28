@@ -138,6 +138,19 @@
             </div>
             @endif
 
+                <!-- Body Map -->
+                @if($medicalRecord->body_map_data)
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        Body Map
+                    </h3>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 inline-block">
+                        <canvas id="bodyMapCanvas" width="500" height="800"></canvas>
+                    </div>
+                </div>
+                @endif
+
             <!-- Attachments -->
             @if($medicalRecord->attachments)
             <div>
@@ -203,3 +216,40 @@
         </div>
     </div>
 </x-app-layout>
+
+@if($medicalRecord->body_map_data)
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvas = new fabric.Canvas('bodyMapCanvas', {
+            isDrawingMode: false,
+            selection: false
+        });
+
+        // Load Body Map Image
+        fabric.Image.fromURL('{{ asset("storage/body_map_outline.png") }}', function(img) {
+            const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+            img.set({
+                scaleX: scale,
+                scaleY: scale,
+                originX: 'left',
+                originY: 'top'
+            });
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+
+            // Load data
+            const existingData = @json($medicalRecord->body_map_data);
+            if (existingData) {
+                canvas.loadFromJSON(existingData, function() {
+                    canvas.renderAll();
+                    // Disable interaction
+                    canvas.getObjects().forEach(function(o) {
+                        o.selectable = false;
+                        o.evented = false;
+                    });
+                });
+            }
+        });
+    });
+</script>
+@endif

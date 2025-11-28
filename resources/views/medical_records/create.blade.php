@@ -44,6 +44,45 @@
                     @error('visit_date') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                <!-- ICD Coding -->
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <h3 class="text-lg font-medium text-blue-900 mb-4">ICD Coding</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="icd10_code" class="block text-sm font-medium text-gray-700">ICD-10 Code</label>
+                            <input type="text" name="icd10_code" id="icd10_code" value="{{ old('icd10_code') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. J00">
+                        </div>
+                        <div>
+                            <label for="icd10_name" class="block text-sm font-medium text-gray-700">ICD-10 Diagnosis Name</label>
+                            <input type="text" name="icd10_name" id="icd10_name" value="{{ old('icd10_name') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. Acute Nasopharyngitis">
+                        </div>
+                        <div>
+                            <label for="icd9_code" class="block text-sm font-medium text-gray-700">ICD-9 Code (Procedure)</label>
+                            <input type="text" name="icd9_code" id="icd9_code" value="{{ old('icd9_code') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. 89.07">
+                        </div>
+                        <div>
+                            <label for="icd9_name" class="block text-sm font-medium text-gray-700">ICD-9 Procedure Name</label>
+                            <input type="text" name="icd9_name" id="icd9_name" value="{{ old('icd9_name') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. Consultation">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body Map -->
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Body Map</h3>
+                    <p class="text-sm text-gray-600 mb-2">Draw on the body map to indicate symptoms or injuries.</p>
+                    
+                    <div class="flex gap-2 mb-2">
+                        <button type="button" id="btn-draw" class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">Pen</button>
+                        <button type="button" id="btn-clear" class="px-3 py-1 bg-red-500 text-white rounded text-sm">Clear</button>
+                    </div>
+
+                    <div class="border border-gray-300 bg-white inline-block">
+                        <canvas id="bodyMapCanvas" width="500" height="800"></canvas>
+                    </div>
+                    <input type="hidden" name="body_map_data" id="body_map_data">
+                </div>
+
                 <!-- Vital Signs -->
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Vital Signs</h3>
@@ -184,7 +223,61 @@
         </form>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Fabric Canvas
+            const canvas = new fabric.Canvas('bodyMapCanvas', {
+                isDrawingMode: true
+            });
+
+            // Set drawing brush
+            canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+            canvas.freeDrawingBrush.width = 3;
+            canvas.freeDrawingBrush.color = "red";
+
+            // Load Body Map Image
+            fabric.Image.fromURL('{{ asset("storage/body_map_outline.png") }}', function(img) {
+                // Scale image to fit canvas if needed
+                const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+                img.set({
+                    scaleX: scale,
+                    scaleY: scale,
+                    originX: 'left',
+                    originY: 'top'
+                });
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+
+            // Button Handlers
+            document.getElementById('btn-draw').addEventListener('click', function() {
+                canvas.isDrawingMode = true;
+            });
+
+            document.getElementById('btn-clear').addEventListener('click', function() {
+                canvas.clear();
+                // Reload background
+                fabric.Image.fromURL('{{ asset("storage/body_map_outline.png") }}', function(img) {
+                    const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+                    img.set({
+                        scaleX: scale,
+                        scaleY: scale,
+                        originX: 'left',
+                        originY: 'top'
+                    });
+                    canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+                });
+            });
+
+            // Save to Hidden Input on Submit
+            document.querySelector('form').addEventListener('submit', function() {
+                const json = JSON.stringify(canvas.toJSON());
+                document.getElementById('body_map_data').value = json;
+            });
+
+            // ... existing medicine script ...
+        });
+        
         let medicineIndex = 0;
         const medicines = @json($medicines);
 

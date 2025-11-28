@@ -52,7 +52,9 @@ class MedicalRecordController extends Controller
             'medicines.*.id' => 'exists:medicines,id',
             'medicines.*.quantity' => 'integer|min:1',
             'medicines.*.instructions' => 'nullable|string',
+            'medicines.*.instructions' => 'nullable|string',
             'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'body_map_data' => 'nullable|string', // JSON string
         ]);
 
         if ($request->hasFile('attachments')) {
@@ -62,6 +64,10 @@ class MedicalRecordController extends Controller
                 $attachments[] = $path;
             }
             $validated['attachments'] = $attachments;
+        }
+
+        if (isset($validated['body_map_data'])) {
+            $validated['body_map_data'] = json_decode($validated['body_map_data'], true);
         }
 
         $record = MedicalRecord::create($validated);
@@ -109,7 +115,9 @@ class MedicalRecordController extends Controller
             'medicines.*.id' => 'exists:medicines,id',
             'medicines.*.quantity' => 'integer|min:1',
             'medicines.*.instructions' => 'nullable|string',
+            'medicines.*.instructions' => 'nullable|string',
             'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'body_map_data' => 'nullable|string', // JSON string
         ]);
 
         if ($request->hasFile('attachments')) {
@@ -119,6 +127,10 @@ class MedicalRecordController extends Controller
                 $attachments[] = $path;
             }
             $validated['attachments'] = $attachments;
+        }
+
+        if (isset($validated['body_map_data'])) {
+            $validated['body_map_data'] = json_decode($validated['body_map_data'], true);
         }
 
         $medicalRecord->update($validated);
