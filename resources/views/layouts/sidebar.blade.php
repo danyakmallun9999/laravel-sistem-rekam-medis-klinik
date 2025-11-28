@@ -40,6 +40,7 @@
             </li>
 
             <!-- Patients -->
+            @can('manage patients')
             <li>
                 <a href="{{ route('patients.index') }}" 
                    class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
@@ -53,8 +54,10 @@
                     </div>
                 </a>
             </li>
+            @endcan
 
             <!-- Medical Records -->
+            @can('view medical records')
             <li>
                 <a href="{{ route('medical_records.index') }}" 
                    class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
@@ -68,8 +71,10 @@
                     </div>
                 </a>
             </li>
+            @endcan
 
             <!-- Doctors -->
+            @can('manage doctors')
             <li>
                 <a href="{{ route('doctors.index') }}" 
                    class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
@@ -83,8 +88,10 @@
                     </div>
                 </a>
             </li>
+            @endcan
 
             <!-- Divider -->
+            @can('manage pharmacy')
             <li class="my-4 border-t border-gray-100" x-show="sidebarOpen"></li>
             <li class="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider" x-show="sidebarOpen">
                 Pharmacy
@@ -119,6 +126,7 @@
                     </div>
                 </a>
             </li>
+            @endcan
 
             <!-- Divider -->
             <li class="my-4 border-t border-gray-100" x-show="sidebarOpen"></li>
@@ -127,6 +135,7 @@
             </li>
 
             <!-- Appointments -->
+            @can('manage patients')
             <li>
                 <a href="{{ route('appointments.index') }}" 
                    class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
@@ -140,8 +149,10 @@
                     </div>
                 </a>
             </li>
+            @endcan
 
             <!-- Billing -->
+            @role('admin')
             <li>
                 <a href="{{ route('invoices.index') }}" 
                    class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
@@ -155,8 +166,10 @@
                     </div>
                 </a>
             </li>
+            @endrole
 
             <!-- Queues -->
+            @can('manage queues')
             <li>
                 <a href="{{ route('queues.index') }}" 
                    class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
@@ -170,6 +183,24 @@
                     </div>
                 </a>
             </li>
+            @endcan
+
+            <!-- Laboratory -->
+            @role('admin')
+            <li>
+                <a href="{{ route('lab.index') }}" 
+                   class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
+                   :class="request()->routeIs('lab.*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-colors" :class="request()->routeIs('lab.*') ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                    </svg>
+                    <span class="ml-3 text-sm whitespace-nowrap" x-show="sidebarOpen">Laboratory</span>
+                    <div x-show="!sidebarOpen" class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap pointer-events-none">
+                        Laboratory
+                    </div>
+                </a>
+            </li>
+            @endrole
         </ul>
     </nav>
 

@@ -15,6 +15,48 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @can('manage patients')
+                    <x-nav-link :href="route('patients.index')" :active="request()->routeIs('patients.*')">
+                        {{ __('Patients') }}
+                    </x-nav-link>
+                    @endcan
+
+                    @can('manage doctors')
+                    <x-nav-link :href="route('doctors.index')" :active="request()->routeIs('doctors.*')">
+                        {{ __('Doctors') }}
+                    </x-nav-link>
+                    @endcan
+
+                    @can('view medical records')
+                    <x-nav-link :href="route('medical_records.index')" :active="request()->routeIs('medical_records.*')">
+                        {{ __('Medical Records') }}
+                    </x-nav-link>
+                    @endcan
+
+                    @can('manage pharmacy')
+                    <x-nav-link :href="route('pharmacy.inventory')" :active="request()->routeIs('pharmacy.inventory*')">
+                        {{ __('Inventory') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('pharmacy.prescriptions')" :active="request()->routeIs('pharmacy.prescriptions*')">
+                        {{ __('Prescriptions') }}
+                    </x-nav-link>
+                    @endcan
+
+                    @role('admin')
+                    <x-nav-link :href="route('lab.index')" :active="request()->routeIs('lab.*')">
+                        {{ __('Laboratory') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('invoices.index')" :active="request()->routeIs('invoices.*')">
+                        {{ __('Invoices') }}
+                    </x-nav-link>
+                    @endrole
+
+                    @can('manage queues')
+                    <x-nav-link :href="route('queues.index')" :active="request()->routeIs('queues.*')">
+                        {{ __('Queues') }}
+                    </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
