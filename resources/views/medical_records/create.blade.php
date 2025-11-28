@@ -144,6 +144,27 @@
                     </div>
                 </div>
 
+                <!-- ICD Coding -->
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <h3 class="text-lg font-medium text-blue-900 mb-4">ICD Coding (Standard WHO)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="icd10_code" class="block text-sm font-medium text-gray-700">ICD-10 Code (Diagnosis)</label>
+                            <div class="flex gap-2">
+                                <input type="text" name="icd10_code" id="icd10_code" value="{{ old('icd10_code') }}" placeholder="e.g. A00.0" class="mt-1 block w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <input type="text" name="icd10_name" id="icd10_name" value="{{ old('icd10_name') }}" placeholder="Diagnosis Name" class="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="icd9_code" class="block text-sm font-medium text-gray-700">ICD-9-CM Code (Procedure)</label>
+                            <div class="flex gap-2">
+                                <input type="text" name="icd9_code" id="icd9_code" value="{{ old('icd9_code') }}" placeholder="e.g. 89.01" class="mt-1 block w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <input type="text" name="icd9_name" id="icd9_name" value="{{ old('icd9_name') }}" placeholder="Procedure Name" class="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Legacy Fields -->
                 <div>
                     <label for="diagnosis" class="block text-sm font-medium text-gray-700">Diagnosis (Summary)</label>

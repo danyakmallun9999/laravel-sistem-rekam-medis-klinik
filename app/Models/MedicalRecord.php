@@ -11,7 +11,13 @@ class MedicalRecord extends Model
     use HasFactory, Auditable;
     protected $fillable = [
         'patient_id', 'doctor_id', 'diagnosis', 'treatment', 'prescription', 'visit_date',
-        'soap_data', 'vital_signs', 'attachments'
+        'soap_data',
+        'vital_signs',
+        'attachments',
+        'icd10_code',
+        'icd10_name',
+        'icd9_code',
+        'icd9_name',
     ];
 
     protected $casts = [

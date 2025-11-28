@@ -20,6 +20,9 @@ class Patient extends Model
         'gender',
         'address',
         'phone',
+        'user_id',
+        'allergies',
+        'medical_history',
     ];
 
     public function user()

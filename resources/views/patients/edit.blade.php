@@ -52,6 +52,20 @@
                     @error('address') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="allergies" class="block text-sm font-medium text-gray-700">Allergies</label>
+                        <textarea name="allergies" id="allergies" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="List any known allergies...">{{ old('allergies', $patient->allergies) }}</textarea>
+                        @error('allergies') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label for="medical_history" class="block text-sm font-medium text-gray-700">Medical History (Anamnesa)</label>
+                        <textarea name="medical_history" id="medical_history" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Past diseases, surgeries, etc.">{{ old('medical_history', $patient->medical_history) }}</textarea>
+                        @error('medical_history') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
                 <div class="flex justify-end">
                     <a href="{{ route('patients.index') }}" class="mr-4 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">Cancel</a>
                     <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">Update Patient</button>

@@ -71,7 +71,112 @@
                 </form>
             </div>
         </div>
+
+        <!-- Medical Info & Charts -->
+        <div class="p-6 bg-white border-b border-gray-200">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Medical Background -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-red-50 rounded-xl p-5 border border-red-100">
+                        <h3 class="text-red-800 font-bold mb-2 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            Allergies
+                        </h3>
+                        <p class="text-red-700 text-sm">{{ $patient->allergies ?: 'No known allergies' }}</p>
+                    </div>
+                    
+                    <div class="bg-indigo-50 rounded-xl p-5 border border-indigo-100">
+                        <h3 class="text-indigo-800 font-bold mb-2 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Medical History
+                        </h3>
+                        <p class="text-indigo-700 text-sm">{{ $patient->medical_history ?: 'No medical history recorded' }}</p>
+                    </div>
+                </div>
+
+                <!-- Vital Signs Chart -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 h-full">
+                        <h3 class="font-bold text-gray-900 mb-4">Vital Signs Trends</h3>
+                        <canvas id="vitalSignsChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('vitalSignsChart').getContext('2d');
+            
+            // Prepare Data
+            const records = @json($patient->medicalRecords->sortBy('visit_date')->values());
+            const labels = records.map(r => new Date(r.visit_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+            
+            const systolicData = records.map(r => r.vital_signs?.systolic || null);
+            const diastolicData = records.map(r => r.vital_signs?.diastolic || null);
+            const weightData = records.map(r => r.vital_signs?.weight || null);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Systolic BP (mmHg)',
+                            data: systolicData,
+                            borderColor: 'rgb(239, 68, 68)', // Red
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Diastolic BP (mmHg)',
+                            data: diastolicData,
+                            borderColor: 'rgb(249, 115, 22)', // Orange
+                            backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Weight (kg)',
+                            data: weightData,
+                            borderColor: 'rgb(99, 102, 241)', // Indigo
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: 'Blood Pressure' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: { display: true, text: 'Weight (kg)' },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        },
+                    }
+                }
+            });
+        });
+    </script>
 
     <!-- Main Content Tabs -->
     <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden min-h-[500px]" x-data="{ tab: 'medical_records' }">
