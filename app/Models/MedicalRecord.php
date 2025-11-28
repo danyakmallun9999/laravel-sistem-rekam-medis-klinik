@@ -41,4 +41,9 @@ class MedicalRecord extends Model
     {
         return $this->hasMany(PrescriptionItem::class);
     }
+
+    public function labResults()
+    {
+        return $this->hasMany(LabResult::class);
+    }
 }

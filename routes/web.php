@@ -61,6 +61,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/appointments', [\App\Http\Controllers\PatientPortalController::class, 'appointments'])->name('appointments');
         Route::get('/invoices', [\App\Http\Controllers\PatientPortalController::class, 'invoices'])->name('invoices');
     });
+
+    // Lab Routes
+    Route::prefix('lab')->name('lab.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\LabController::class, 'index'])->name('index');
+        Route::get('/create/{record}', [\App\Http\Controllers\LabController::class, 'create'])->name('create');
+        Route::post('/store/{record}', [\App\Http\Controllers\LabController::class, 'store'])->name('store');
+    });
 });
 
 require __DIR__.'/auth.php';
