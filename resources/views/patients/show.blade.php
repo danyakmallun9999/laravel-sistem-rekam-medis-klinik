@@ -77,10 +77,29 @@
             <!-- Appointments (Placeholder for now) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-900">Upcoming Appointments</h3>
-                    <button class="text-sm bg-green-50 text-green-600 px-3 py-1 rounded-full hover:bg-green-100 transition-colors">Book Appointment</button>
+                    <h3 class="text-lg font-bold text-gray-900">Appointment History</h3>
+                    <a href="{{ route('appointments.create', ['patient_id' => $patient->id]) }}" class="text-sm bg-green-50 text-green-600 px-3 py-1 rounded-full hover:bg-green-100 transition-colors">Book Appointment</a>
                 </div>
-                <p class="text-gray-500 text-center py-4">No upcoming appointments.</p>
+                @if($patient->appointments->count() > 0)
+                    <div class="space-y-4">
+                        @foreach($patient->appointments as $appointment)
+                            <div class="border-l-4 border-green-500 pl-4 py-2">
+                                <div class="flex justify-between">
+                                    <p class="font-bold text-gray-900">{{ $appointment->appointment_date }}</p>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        {{ $appointment->status === 'completed' ? 'bg-green-100 text-green-800' : 
+                                           ($appointment->status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                        {{ ucfirst($appointment->status) }}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">{{ $appointment->notes ?? 'No notes' }}</p>
+                                <p class="text-xs text-gray-500 mt-2">Dr. {{ $appointment->doctor->name }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-gray-500 text-center py-4">No appointments found.</p>
+                @endif
             </div>
         </div>
     </div>
