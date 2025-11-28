@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Patient;
 use App\Models\Doctor;
 use App\Models\MedicalRecord;
+use App\Models\Invoice;
+use App\Models\Appointment;
+use App\Models\Queue;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -46,7 +49,24 @@ class DashboardController extends Controller
             ->get();
 
         $diagnosisLabels = $topDiagnoses->pluck('diagnosis');
+        $diagnosisLabels = $topDiagnoses->pluck('diagnosis');
         $diagnosisData = $topDiagnoses->pluck('total');
+
+        // Financial Stats
+        $totalRevenue = Invoice::where('status', 'paid')->sum('total_amount');
+        $pendingRevenue = Invoice::where('status', 'unpaid')->sum('total_amount');
+
+        // Operational Stats
+        $todayAppointments = Appointment::whereDate('appointment_date', today())->count();
+        $activeQueues = Queue::whereIn('status', ['waiting', 'called'])->whereDate('created_at', today())->count();
+
+        // Chart 3: Appointment Status
+        $appointmentStats = Appointment::select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->get();
+        
+        $appointmentLabels = $appointmentStats->pluck('status');
+        $appointmentData = $appointmentStats->pluck('total');
 
         return view('dashboard', compact(
             'totalPatients', 
@@ -56,7 +76,15 @@ class DashboardController extends Controller
             'visitLabels',
             'visitData',
             'diagnosisLabels',
-            'diagnosisData'
+            'visitData',
+            'diagnosisLabels',
+            'diagnosisData',
+            'totalRevenue',
+            'pendingRevenue',
+            'todayAppointments',
+            'activeQueues',
+            'appointmentLabels',
+            'appointmentData'
         ));
     }
 }
