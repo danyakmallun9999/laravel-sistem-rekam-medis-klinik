@@ -14,7 +14,8 @@ class DoctorController extends Controller
         if ($request->has('search')) {
             $search = $request->get('search');
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('specialization', 'like', "%{$search}%");
+                  ->orWhere('specialization', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
         }
 
         $doctors = $query->latest()->paginate(10);
