@@ -16,13 +16,19 @@ class PatientFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create('id_ID');
+        
         return [
-            'name' => fake()->name(),
-            'nik' => fake()->unique()->numerify('################'),
-            'dob' => fake()->date(),
-            'gender' => fake()->randomElement(['male', 'female']),
-            'address' => fake()->address(),
-            'phone' => fake()->phoneNumber(),
+            'name' => $faker->name(),
+            'nik' => $faker->unique()->numerify('################'), // 16 digits
+            'dob' => $faker->date('Y-m-d', '-10 years'),
+            'gender' => $faker->randomElement(['male', 'female']),
+            'address' => $faker->address(),
+            'phone' => $faker->phoneNumber(),
+            'bpjs_number' => $faker->unique()->numerify('000##########'), // Mock BPJS
+            'blood_type' => $faker->randomElement(['A', 'B', 'AB', 'O']),
+            'allergies' => $faker->optional(0.2)->randomElement(['Kacang', 'Seafood', 'Antibiotik', 'Debu', 'Telur']),
+            'medical_history' => $faker->optional(0.3)->sentence(),
         ];
     }
 }

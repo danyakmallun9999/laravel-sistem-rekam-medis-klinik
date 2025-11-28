@@ -20,6 +20,8 @@ class Patient extends Model
         'gender',
         'address',
         'phone',
+        'bpjs_number',
+        'blood_type',
         'user_id',
         'allergies',
         'medical_history',

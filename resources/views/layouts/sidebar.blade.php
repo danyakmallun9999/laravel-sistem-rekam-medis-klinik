@@ -201,6 +201,28 @@
                 </a>
             </li>
             @endrole
+
+            <!-- Administration -->
+            @role('admin')
+            <li class="my-4 border-t border-gray-100" x-show="sidebarOpen"></li>
+            <li class="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider" x-show="sidebarOpen">
+                Administration
+            </li>
+
+            <li>
+                <a href="{{ route('users.index') }}" 
+                   class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
+                   :class="request()->routeIs('users.*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-colors" :class="request()->routeIs('users.*') ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <span class="ml-3 text-sm whitespace-nowrap" x-show="sidebarOpen">User Management</span>
+                    <div x-show="!sidebarOpen" class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap pointer-events-none">
+                        User Management
+                    </div>
+                </a>
+            </li>
+            @endrole
         </ul>
     </nav>
 

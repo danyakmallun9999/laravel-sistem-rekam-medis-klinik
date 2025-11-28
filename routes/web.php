@@ -20,6 +20,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // User Management
+    Route::group(['middleware' => ['role:admin']], function () {
+        Route::resource('users', \App\Http\Controllers\UserController::class);
+    });
+
     Route::resource('patients', \App\Http\Controllers\PatientController::class);
     Route::resource('doctors', \App\Http\Controllers\DoctorController::class);
     Route::resource('medical_records', MedicalRecordController::class);
