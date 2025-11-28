@@ -12,6 +12,23 @@ class MedicalRecordSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\MedicalRecord::factory(100)->create();
+        $doctors = \App\Models\Doctor::all();
+        $patients = \App\Models\Patient::all();
+
+        if ($doctors->isEmpty() || $patients->isEmpty()) {
+            return;
+        }
+
+        $doctors = \App\Models\Doctor::all();
+        $patients = \App\Models\Patient::all();
+
+        if ($doctors->isEmpty() || $patients->isEmpty()) {
+            return;
+        }
+
+        \App\Models\MedicalRecord::factory(100)
+            ->recycle($doctors)
+            ->recycle($patients)
+            ->create();
     }
 }
