@@ -27,11 +27,44 @@
                         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex justify-between items-center">
                             {{ $header }}
                             
-                            <!-- User Dropdown / Profile (Simplified) -->
-                            <div class="flex items-center">
-                                <span class="text-gray-700 text-sm font-medium mr-2">{{ Auth::user()->name }}</span>
-                                <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
+                            <!-- User Dropdown -->
+                            <div class="relative" x-data="{ open: false }">
+                                <button @click="open = !open" @click.away="open = false" class="flex items-center focus:outline-none">
+                                    <span class="text-gray-700 text-sm font-medium mr-2">{{ Auth::user()->name }}</span>
+                                    <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                                        {{ substr(Auth::user()->name, 0, 1) }}
+                                    </div>
+                                    <svg class="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+
+                                <!-- Dropdown Menu -->
+                                <div x-show="open" 
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="transform opacity-0 scale-95"
+                                     x-transition:enter-end="transform opacity-100 scale-100"
+                                     x-transition:leave="transition ease-in duration-75"
+                                     x-transition:leave-start="transform opacity-100 scale-100"
+                                     x-transition:leave-end="transform opacity-0 scale-95"
+                                     class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5">
+                                    
+                                    <!-- Profile Link (Optional) -->
+                                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        {{ __('Profile') }}
+                                    </a>
+
+                                    <div class="border-t border-gray-100"></div>
+
+                                    <!-- Authentication -->
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <a href="{{ route('logout') }}"
+                                           onclick="event.preventDefault(); this.closest('form').submit();"
+                                           class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                            {{ __('Log Out') }}
+                                        </a>
+                                    </form>
                                 </div>
                             </div>
                         </div>
