@@ -12,7 +12,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'role:admin|doctor|staff'])
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('users', \App\Http\Controllers\UserController::class);
     });
 
+    Route::post('patients/{patient}/create-account', [\App\Http\Controllers\PatientController::class, 'createAccount'])->name('patients.create-account');
     Route::resource('patients', \App\Http\Controllers\PatientController::class);
     Route::resource('doctors', \App\Http\Controllers\DoctorController::class);
     Route::resource('medical_records', MedicalRecordController::class);

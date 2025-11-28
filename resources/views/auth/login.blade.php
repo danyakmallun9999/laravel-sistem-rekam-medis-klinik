@@ -52,16 +52,16 @@
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
-                    <!-- Email Address -->
+                    <!-- Email Address / NIK -->
                     <div class="mb-5">
-                        <label for="email" class="block font-medium text-sm text-gray-700 mb-1">Email Address</label>
+                        <label for="email" class="block font-medium text-sm text-gray-700 mb-1">Email Address / NIK</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
                                 </svg>
                             </div>
-                            <input id="email" class="block w-full pl-10 pr-3 py-2.5 border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition-colors shadow-sm" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="name@example.com" />
+                            <input id="email" class="block w-full pl-10 pr-3 py-2.5 border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition-colors shadow-sm" type="text" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="name@example.com or NIK" />
                         </div>
                         @error('email')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>

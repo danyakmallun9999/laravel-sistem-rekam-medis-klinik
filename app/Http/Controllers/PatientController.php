@@ -82,4 +82,35 @@ class PatientController extends Controller
 
         return redirect()->route('patients.index')->with('success', 'Patient deleted successfully.');
     }
+
+    public function createAccount(Patient $patient)
+    {
+        if ($patient->user_id) {
+            return back()->with('error', 'This patient already has an account.');
+        }
+
+        // Generate Credentials
+        $email = $patient->nik . '@srme.local';
+        $password = \Carbon\Carbon::parse($patient->dob)->format('dmY'); // e.g., 25121990
+
+        // Check if user already exists (shouldn't happen if NIK is unique, but good safety)
+        if (\App\Models\User::where('email', $email)->exists()) {
+            return back()->with('error', 'User account with this NIK already exists.');
+        }
+
+        // Create User
+        $user = \App\Models\User::create([
+            'name' => $patient->name,
+            'email' => $email,
+            'password' => \Illuminate\Support\Facades\Hash::make($password),
+        ]);
+
+        // Assign Role
+        $user->assignRole('patient');
+
+        // Link to Patient
+        $patient->update(['user_id' => $user->id]);
+
+        return back()->with('success', "Account created! Username: $patient->nik, Password: $password");
+    }
 }

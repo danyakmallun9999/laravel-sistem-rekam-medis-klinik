@@ -73,13 +73,23 @@
                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 {{ $patient->address }}
             </div>
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-end gap-3 items-center">
+                @if(!$patient->user_id)
+                    <form action="{{ route('patients.create-account', $patient) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="text-green-600 hover:text-green-800 font-medium flex items-center gap-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                            Create Account
+                        </button>
+                    </form>
+                    <span class="text-gray-300">|</span>
+                @endif
                 <a href="{{ route('patients.edit', $patient) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">Edit Profile</a>
                 <span class="text-gray-300">|</span>
-                <form action="{{ route('patients.destroy', $patient) }}" method="POST" onsubmit="return confirm('Are you sure?')" class="inline">
+                <form id="delete-form-{{ $patient->id }}" action="{{ route('patients.destroy', $patient) }}" method="POST" class="inline-block">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Delete</button>
+                    <button type="button" onclick="confirmDelete(event, 'delete-form-{{ $patient->id }}')" class="text-red-600 hover:text-red-800 font-medium">Delete</button>
                 </form>
             </div>
         </div>
