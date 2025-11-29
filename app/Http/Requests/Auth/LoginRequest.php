@@ -43,9 +43,12 @@ class LoginRequest extends FormRequest
 
         $credentials = $this->only('email', 'password');
 
+        // Sanitize NIK: Remove spaces, dashes, etc. if it looks like a NIK
+        $cleanEmail = preg_replace('/[^0-9]/', '', $credentials['email']);
+        
         // Check if input is NIK (numeric and 16 digits)
-        if (is_numeric($credentials['email']) && strlen($credentials['email']) == 16) {
-            $credentials['email'] .= '@srme.local';
+        if (is_numeric($cleanEmail) && strlen($cleanEmail) == 16) {
+            $credentials['email'] = $cleanEmail . '@srme.local';
         }
 
         if (! Auth::attempt($credentials, $this->boolean('remember'))) {

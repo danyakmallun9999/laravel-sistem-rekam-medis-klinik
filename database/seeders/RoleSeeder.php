@@ -51,6 +51,9 @@ class RoleSeeder extends Seeder
         $frontOfficeRole = Role::firstOrCreate(['name' => 'front_office']);
         $frontOfficeRole->givePermissionTo(['manage queues', 'manage patients', 'view dashboard']);
 
+        // Patient: View Own Records (Permissions handled via policy/logic mostly)
+        $patientRole = Role::firstOrCreate(['name' => 'patient']);
+
         // Assign Admin role to the first user (if exists)
         $user = User::first();
         if ($user) {

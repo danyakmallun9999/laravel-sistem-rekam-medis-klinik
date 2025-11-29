@@ -111,6 +111,6 @@ class PatientController extends Controller
         // Link to Patient
         $patient->update(['user_id' => $user->id]);
 
-        return back()->with('success', "Account created! Username: $patient->nik, Password: $password");
+        return back()->with('success', "Account created! Username: $patient->nik, Password: $password (Format: DDMMYYYY)");
     }
 }
