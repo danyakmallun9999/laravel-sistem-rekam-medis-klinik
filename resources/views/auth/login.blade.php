@@ -16,7 +16,7 @@
 </head>
 <body class="font-sans antialiased text-gray-900">
     <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row">
+        <div class="bg-white w-full max-w-4xl border border-gray-200 rounded-2xl overflow-hidden flex flex-col md:flex-row">
             
             <!-- Left Side: Branding & Illustration -->
             <div class="w-full md:w-1/2 bg-indigo-600 p-10 flex flex-col justify-center items-center text-white relative overflow-hidden">
@@ -95,11 +95,7 @@
                             <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                         </label>
 
-                        @if (Route::has('password.request'))
-                            <a class="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors" href="{{ route('password.request') }}">
-                                {{ __('Forgot Password?') }}
-                            </a>
-                        @endif
+
                     </div>
 
                     <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all transform hover:scale-[1.02] shadow-md">
