@@ -70,6 +70,10 @@ class MedicalRecordController extends Controller
             $validated['body_map_data'] = json_decode($validated['body_map_data'], true);
         }
 
+        // CDSS Analysis
+        $record = new MedicalRecord($validated); // Temporary instance for analysis
+        $validated['clinical_analysis'] = \App\Services\ClinicalDecisionSupportService::analyze($record);
+
         $record = MedicalRecord::create($validated);
 
         if ($request->has('medicines')) {
@@ -132,6 +136,10 @@ class MedicalRecordController extends Controller
         if (isset($validated['body_map_data'])) {
             $validated['body_map_data'] = json_decode($validated['body_map_data'], true);
         }
+
+        // CDSS Analysis
+        $medicalRecord->fill($validated); // Fill with new data for analysis
+        $validated['clinical_analysis'] = \App\Services\ClinicalDecisionSupportService::analyze($medicalRecord);
 
         $medicalRecord->update($validated);
 

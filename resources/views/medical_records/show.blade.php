@@ -63,6 +63,32 @@
         <!-- Main Content -->
         <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden p-6 sm:p-8 space-y-8">
             
+            <!-- AI Clinical Analysis -->
+            @if($medicalRecord->clinical_analysis)
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100 shadow-sm">
+                <h3 class="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    AI Clinical Insights
+                    <span class="ml-2 px-2 py-0.5 rounded text-xs font-bold bg-blue-200 text-blue-800">BETA</span>
+                </h3>
+                <div class="space-y-3">
+                    @foreach($medicalRecord->clinical_analysis as $analysis)
+                        <div class="flex items-start gap-3 p-3 rounded-lg {{ $analysis['type'] === 'danger' ? 'bg-red-50 border border-red-100' : 'bg-yellow-50 border border-yellow-100' }}">
+                            @if($analysis['type'] === 'danger')
+                                <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            @else
+                                <svg class="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            @endif
+                            <div>
+                                <h4 class="font-bold {{ $analysis['type'] === 'danger' ? 'text-red-800' : 'text-yellow-800' }}">{{ $analysis['title'] }}</h4>
+                                <p class="{{ $analysis['type'] === 'danger' ? 'text-red-700' : 'text-yellow-700' }} text-sm">{{ $analysis['message'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
             <!-- Vital Signs -->
             @if($medicalRecord->vital_signs)
             <div>

@@ -13,6 +13,7 @@ class MedicalRecord extends Model
         'patient_id', 'doctor_id', 'diagnosis', 'treatment', 'prescription', 'visit_date',
         'soap_data',
         'vital_signs',
+        'clinical_analysis',
         'attachments',
         'icd10_code',
         'icd10_name',
@@ -25,6 +26,7 @@ class MedicalRecord extends Model
         'visit_date' => 'date',
         'soap_data' => 'array',
         'vital_signs' => 'array',
+        'clinical_analysis' => 'array',
         'attachments' => 'array',
         'body_map_data' => 'array',
     ];

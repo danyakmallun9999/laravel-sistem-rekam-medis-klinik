@@ -104,6 +104,10 @@
                             <input type="number" name="vital_signs[respiratory_rate]" id="respiratory_rate" value="{{ old('vital_signs.respiratory_rate') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
                         <div>
+                            <label for="oxygen_saturation" class="block text-xs font-medium text-gray-500 uppercase">SpO2 (%)</label>
+                            <input type="number" name="vital_signs[oxygen_saturation]" id="oxygen_saturation" value="{{ old('vital_signs.oxygen_saturation') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                        <div>
                             <label for="temperature" class="block text-xs font-medium text-gray-500 uppercase">Temp (°C)</label>
                             <input type="number" step="0.1" name="vital_signs[temperature]" id="temperature" value="{{ old('vital_signs.temperature') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
