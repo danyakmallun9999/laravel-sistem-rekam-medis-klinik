@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
 
     // Pharmacy Routes
     Route::prefix('pharmacy')->name('pharmacy.')->group(function () {
+        Route::get('/', [PharmacyController::class, 'prescriptions'])->name('prescriptions');
+        
         Route::get('/inventory', [PharmacyController::class, 'inventory'])->name('inventory');
         Route::get('/inventory/create', [PharmacyController::class, 'create'])->name('inventory.create');
         Route::post('/inventory', [PharmacyController::class, 'store'])->name('inventory.store');
@@ -53,7 +55,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/inventory/{medicine}', [PharmacyController::class, 'update'])->name('inventory.update');
         Route::delete('/inventory/{medicine}', [PharmacyController::class, 'destroy'])->name('inventory.destroy');
 
-        Route::get('/prescriptions', [PharmacyController::class, 'prescriptions'])->name('prescriptions');
         Route::get('/prescriptions/{record}', [PharmacyController::class, 'showPrescription'])->name('prescriptions.show');
         Route::post('/prescriptions/{record}/dispense', [PharmacyController::class, 'dispense'])->name('prescriptions.dispense');
     });
