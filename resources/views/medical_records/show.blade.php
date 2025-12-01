@@ -7,44 +7,41 @@
 
     <!-- Unified Header -->
     <div class="max-w-4xl mx-auto">
-        <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden mb-6">
-            <div class="relative overflow-hidden">
-                <!-- Background Pattern -->
-                <div class="absolute inset-0 bg-gradient-to-br from-indigo-600 to-indigo-800"></div>
-                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden mb-6 border border-gray-100">
+            <div class="p-6 sm:p-8">
+                <div class="mb-6">
+                    <a href="{{ route('medical_records.index') }}" class="group inline-flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors">
+                        <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                        Back to Medical Records
+                    </a>
+                </div>
                 
-                <div class="relative p-6 sm:p-10 text-white">
-                    <div class="mb-8">
-                        <a href="{{ route('medical_records.index') }}" class="group inline-flex items-center px-4 py-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all backdrop-blur-sm text-sm font-medium border border-white/10">
-                            <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                            Back to Medical Records
-                        </a>
-                    </div>
-                    
-                    <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-50 border border-green-400/30 backdrop-blur-md flex items-center gap-1.5 shadow-sm">
-                                    <span class="relative flex h-2 w-2">
-                                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                      <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
-                                    </span>
-                                    COMPLETED
+                <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                                 </span>
-                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-indigo-50 border border-white/10 backdrop-blur-md">
-                                    #MR-{{ $medicalRecord->id }}
-                                </span>
+                                COMPLETED
+                            </span>Back to Medical Records
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                                #MR-{{ $medicalRecord->id }}
+                            </span>
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
+                            {{ $medicalRecord->diagnosis }}
+                        </h1>
+                        <div class="flex flex-wrap items-center gap-4 text-gray-500 text-sm">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span>{{ $medicalRecord->visit_date->format('d F Y') }}</span>
                             </div>
-                            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
-                                {{ $medicalRecord->diagnosis }}
-                            </h1>
-                            <div class="flex flex-wrap items-center gap-6 text-indigo-100">
-                                <div class="flex items-center gap-2 bg-indigo-900/30 px-3 py-1.5 rounded-lg backdrop-blur-sm border border-white/5">
-                                    <svg class="w-5 h-5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    <span class="font-medium">{{ $medicalRecord->visit_date->format('d F Y') }}</span>
-                                    <span class="text-indigo-400">|</span>
-                                    <span class="font-medium">{{ $medicalRecord->visit_date->format('H:i') }}</span>
-                                </div>
+                            <span class="text-gray-300">|</span>
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>{{ $medicalRecord->visit_date->format('H:i') }}</span>
                             </div>
                         </div>
                     </div>
@@ -53,21 +50,24 @@
 
             <!-- Compliance & Safety Alerts -->
             @if($medicalRecord->allergies)
-            <div class="px-6 sm:px-10 -mt-6 mb-8 relative z-10">
-                <div class="bg-white rounded-xl shadow-lg border-l-4 border-red-500 p-5 flex items-start gap-5 transform transition-transform hover:scale-[1.01]">
-                    <div class="flex-shrink-0 p-3 bg-red-50 rounded-full">
-                        <svg class="h-6 w-6 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <!-- Compliance & Safety Alerts -->
+            @if($medicalRecord->allergies)
+            <div class="px-6 sm:px-8 mb-6">
+                <div class="bg-red-50 rounded-lg p-4 border border-red-100 flex items-start gap-4">
+                    <div class="flex-shrink-0 mt-0.5">
+                        <svg class="h-5 w-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-base font-bold text-gray-900 mb-1">Patient Allergies</h3>
-                        <p class="text-gray-600 leading-relaxed">
+                        <h3 class="text-sm font-semibold text-red-900 mb-0.5">Patient Allergies</h3>
+                        <p class="text-sm text-red-700 leading-relaxed">
                             {{ $medicalRecord->allergies }}
                         </p>
                     </div>
                 </div>
             </div>
+            @endif
             @endif
 
             <!-- Patient & Doctor Info Bar -->
