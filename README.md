@@ -1,59 +1,125 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏥 SRME - Sistem Rekam Medis Elektronik
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**SRME** adalah aplikasi berbasis web yang dirancang untuk mendigitalkan proses operasional klinik, mulai dari pendaftaran pasien, rekam medis, antrean, hingga farmasi dan penagihan.
 
-## About Laravel
+![SRME Dashboard](https://via.placeholder.com/800x400?text=SRME+Dashboard+Preview)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Sistem ini memiliki berbagai modul yang terintegrasi:
 
-## Learning Laravel
+- **👥 Manajemen Pasien**: Pencatatan data demografis dan riwayat kunjungan pasien.
+- **📋 Rekam Medis Elektronik (EMR)**: Pencatatan diagnosa, tindakan, dan riwayat medis oleh dokter.
+- **📅 Pendaftaran & Antrean**: Manajemen jadwal temu (appointment) dan sistem antrean *real-time* untuk poli.
+- **💊 Farmasi & Inventori**: Manajemen stok obat, resep digital, dan pemrosesan obat.
+- **💰 Kasir & Penagihan**: Pembuatan invoice otomatis dan pencetakan bukti pembayaran.
+- **🔬 Laboratorium**: (Opsional/Dalam Pengembangan) Manajemen permintaan dan hasil lab.
+- **🔐 Manajemen Pengguna**: Kontrol akses berbasis peran (Role-Based Access Control) untuk Admin, Dokter, Perawat, Front Office, dan Farmasi.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Teknologi yang Digunakan
 
-## Laravel Sponsors
+- **Backend**: [Laravel 10](https://laravel.com) (PHP Framework)
+- **Frontend**: [Blade Templates](https://laravel.com/docs/blade), [Tailwind CSS](https://tailwindcss.com)
+- **Interaktivitas**: [Alpine.js](https://alpinejs.dev)
+- **Database**: MySQL
+- **Authentication**: Laravel Breeze / Spatie Permission
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## ⚙️ Instalasi & Konfigurasi
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Ikuti langkah-langkah berikut untuk menjalankan aplikasi di lingkungan lokal Anda.
 
-## Contributing
+### Prasyarat
+- PHP >= 8.1
+- Composer
+- Node.js & NPM
+- MySQL
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Langkah Instalasi
 
-## Code of Conduct
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/username/srme.git
+   cd srme
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Install Dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Security Vulnerabilities
+3. **Konfigurasi Environment**
+   Salin file `.env.example` menjadi `.env` dan sesuaikan konfigurasi database Anda.
+   ```bash
+   cp .env.example .env
+   ```
+   Buka file `.env` dan atur koneksi database:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=srme_db
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. **Generate App Key**
+   ```bash
+   php artisan key:generate
+   ```
 
-## License
+5. **Migrasi & Seeding Database**
+   Jalankan migrasi untuk membuat tabel dan seeder untuk data awal (user admin, roles, dll).
+   ```bash
+   php artisan migrate --seed
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+6. **Jalankan Aplikasi**
+   Buka dua terminal terpisah untuk menjalankan server Laravel dan Vite (frontend build).
+   
+   *Terminal 1:*
+   ```bash
+   php artisan serve
+   ```
+   
+   *Terminal 2:*
+   ```bash
+   npm run dev
+   ```
+
+7. **Akses Aplikasi**
+   Buka browser dan kunjungi `http://localhost:8000`.
+
+---
+
+## 📖 Panduan Penggunaan Singkat
+
+### Login Default
+Jika Anda menggunakan seeder bawaan, berikut adalah beberapa akun default (password biasanya `password` atau `12345678` - cek `DatabaseSeeder.php`):
+
+- **Admin**: Akses penuh ke seluruh sistem.
+- **Dokter**: Akses ke modul pasien, rekam medis, dan jadwal.
+- **Front Office**: Akses ke pendaftaran dan pembayaran.
+- **Farmasi**: Akses ke resep dan inventori.
+
+### Alur Kerja Umum
+1. **Pendaftaran**: Front Office mendaftarkan pasien baru atau membuat janji temu.
+2. **Pemeriksaan**: Dokter memanggil pasien dari antrean, melakukan pemeriksaan, dan input rekam medis + resep.
+3. **Farmasi**: Bagian farmasi menerima resep digital dan menyiapkan obat.
+4. **Pembayaran**: Kasir membuat invoice berdasarkan tindakan dan obat, lalu mencetak bukti bayar.
+
+---
+
+## 🤝 Kontribusi
+
+Kontribusi selalu diterima! Silakan buat *Pull Request* atau laporkan *Issue* jika Anda menemukan bug.
+
+## 📄 Lisensi
+
+Aplikasi ini dilisensikan di bawah [MIT License](https://opensource.org/licenses/MIT).
