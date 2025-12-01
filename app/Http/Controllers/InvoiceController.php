@@ -14,8 +14,14 @@ class InvoiceController extends Controller
         $invoices = Invoice::with(['patient', 'appointment'])
             ->orderBy('created_at', 'desc')
             ->get();
+
+        $pendingPayments = Appointment::where('status', 'waiting_payment')
+            ->doesntHave('invoice')
+            ->with(['patient', 'doctor'])
+            ->orderBy('updated_at', 'asc')
+            ->get();
             
-        return view('invoices.index', compact('invoices'));
+        return view('invoices.index', compact('invoices', 'pendingPayments'));
     }
 
     public function create(Request $request)
