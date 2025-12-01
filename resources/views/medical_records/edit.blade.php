@@ -11,7 +11,7 @@
     </x-slot>
 
     <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow">
-        <form action="{{ route('medical_records.update', $medicalRecord) }}" method="POST" enctype="multipart/form-data">
+        <form id="medical-record-form" action="{{ route('medical_records.update', $medicalRecord) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="space-y-8">
@@ -413,11 +413,12 @@
 
             // Initialize Fabric Canvas
             // Start with default dimensions, will be updated when image loads
-            const canvas = new fabric.Canvas('bodyMapCanvas', {
+            window.canvas = new fabric.Canvas('bodyMapCanvas', {
                 isDrawingMode: true,
                 width: 800,
                 height: 600
             });
+            const canvas = window.canvas;
 
             // Set drawing brush
             canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
@@ -488,8 +489,9 @@
             });
 
             // Save to Hidden Input on Submit
-            document.querySelector('form').addEventListener('submit', function() {
+            document.getElementById('medical-record-form').addEventListener('submit', function() {
                 const json = JSON.stringify(canvas.toJSON());
+                console.log('Submitting form. Body Map Data:', json);
                 document.getElementById('body_map_data').value = json;
             });
 

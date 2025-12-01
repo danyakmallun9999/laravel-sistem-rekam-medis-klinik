@@ -11,7 +11,7 @@
     </x-slot>
 
     <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow">
-        <form action="{{ route('medical_records.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="medical-record-form" action="{{ route('medical_records.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="space-y-8">
                 <!-- Basic Info -->
@@ -458,7 +458,7 @@
             });
 
             // Save to Hidden Input on Submit
-            document.querySelector('form').addEventListener('submit', function() {
+            document.getElementById('medical-record-form').addEventListener('submit', function() {
                 const json = JSON.stringify(canvas.toJSON());
                 console.log('Submitting form. Body Map Data:', json);
                 document.getElementById('body_map_data').value = json;
