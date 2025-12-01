@@ -58,7 +58,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ Str::limit($record->diagnosis, 30) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('medical_records.show', $record) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
-                                @if($record->isLatestForPatient() && !auth()->user()->hasRole('front_office'))
+                                @if($record->isLatestForPatient() && !auth()->user()->hasRole('front_office') && !auth()->user()->hasRole('doctor'))
                                     <a href="{{ route('medical_records.edit', $record) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
                                 @endif
                                 {{-- Delete button removed as per legal requirements --}}

@@ -72,7 +72,9 @@
                                 <form id="delete-form-{{ $patient->id }}" action="{{ route('patients.destroy', $patient) }}" method="POST" class="inline-block">
                                     @csrf
                                     @method('DELETE')
+                                    @unless(auth()->user()->hasRole('front_office'))
                                     <button type="button" onclick="confirmDelete(event, 'delete-form-{{ $patient->id }}')" class="text-red-600 hover:text-red-900">Delete</button>
+                                    @endunless
                                 </form>
                                 @endcan
                             </td>

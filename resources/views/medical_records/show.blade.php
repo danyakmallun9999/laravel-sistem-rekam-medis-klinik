@@ -228,7 +228,7 @@
 
             <!-- Actions -->
             <div class="pt-6 border-t border-gray-100 flex justify-end gap-3">
-                @if($medicalRecord->isLatestForPatient() && !auth()->user()->hasRole('front_office'))
+                @if($medicalRecord->isLatestForPatient() && !auth()->user()->hasRole('front_office') && !auth()->user()->hasRole('doctor'))
                 <a href="{{ route('medical_records.edit', $medicalRecord) }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                     Edit Record
                 </a>
