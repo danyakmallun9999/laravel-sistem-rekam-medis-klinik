@@ -24,12 +24,14 @@
                 @endif
             </form>
         </div>
+        @unless(auth()->user()->hasRole('front_office'))
         <a href="{{ route('medical_records.create') }}" class="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
             Add Record
         </a>
+        @endunless
     </div>
 
     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-gray-200">
@@ -56,12 +58,10 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ Str::limit($record->diagnosis, 30) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('medical_records.show', $record) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
-                                <a href="{{ route('medical_records.edit', $record) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
-                                <form action="{{ route('medical_records.destroy', $record) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
-                                </form>
+                                @if($record->isLatestForPatient() && !auth()->user()->hasRole('front_office'))
+                                    <a href="{{ route('medical_records.edit', $record) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
+                                @endif
+                                {{-- Delete button removed as per legal requirements --}}
                             </td>
                         </tr>
                     @endforeach

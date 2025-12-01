@@ -29,6 +29,9 @@ class MedicalRecordController extends Controller
 
     public function create(Request $request)
     {
+        if (auth()->user()->hasRole('front_office')) {
+            abort(403, 'Front Office staff are not authorized to create medical records.');
+        }
         $patients = Patient::all();
         $doctors = Doctor::all();
         $medicines = \App\Models\Medicine::where('stock', '>', 0)->get();
@@ -40,6 +43,9 @@ class MedicalRecordController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->hasRole('front_office')) {
+            abort(403, 'Front Office staff are not authorized to create medical records.');
+        }
         $validated = $request->validate([
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'required|exists:doctors,id',
@@ -99,6 +105,13 @@ class MedicalRecordController extends Controller
 
     public function edit(MedicalRecord $medicalRecord)
     {
+        if (auth()->user()->hasRole('front_office')) {
+            abort(403, 'Front Office staff are not authorized to edit medical records.');
+        }
+        if (!$medicalRecord->isLatestForPatient()) {
+            abort(403, 'Only the latest medical record for a patient can be edited.');
+        }
+
         $patients = Patient::all();
         $doctors = Doctor::all();
         $medicines = \App\Models\Medicine::all();
@@ -107,6 +120,13 @@ class MedicalRecordController extends Controller
 
     public function update(Request $request, MedicalRecord $medicalRecord)
     {
+        if (auth()->user()->hasRole('front_office')) {
+            abort(403, 'Front Office staff are not authorized to edit medical records.');
+        }
+        if (!$medicalRecord->isLatestForPatient()) {
+            abort(403, 'Only the latest medical record for a patient can be edited.');
+        }
+
         $validated = $request->validate([
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'required|exists:doctors,id',
@@ -163,8 +183,7 @@ class MedicalRecordController extends Controller
 
     public function destroy(MedicalRecord $medicalRecord)
     {
-        $medicalRecord->delete();
-
-        return redirect()->route('medical_records.index')->with('success', 'Medical Record deleted successfully.');
+        // Medical records cannot be deleted by law
+        abort(403, 'Deleting medical records is prohibited by law.');
     }
 }

@@ -62,4 +62,18 @@ class MedicalRecord extends Model
     {
         return $this->hasMany(LabResult::class);
     }
+
+    /**
+     * Check if this medical record is the latest one for the patient.
+     *
+     * @return bool
+     */
+    public function isLatestForPatient()
+    {
+        $latestRecord = self::where('patient_id', $this->patient_id)
+            ->latest('created_at')
+            ->first();
+
+        return $latestRecord && $latestRecord->id === $this->id;
+    }
 }

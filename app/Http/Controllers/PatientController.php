@@ -78,6 +78,9 @@ class PatientController extends Controller
 
     public function destroy(Patient $patient)
     {
+        if (auth()->user()->hasRole('front_office')) {
+            abort(403, 'Front Office staff are not authorized to delete patients.');
+        }
         $patient->delete();
 
         return redirect()->route('patients.index')->with('success', 'Patient deleted successfully.');
