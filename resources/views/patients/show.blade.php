@@ -6,244 +6,145 @@
 
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="mb-6">
-                <a href="{{ route('patients.index') }}" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            <!-- Header -->
+            <div class="mb-8">
+                <a href="{{ route('patients.index') }}" class="group inline-flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors mb-4">
+                    <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Back to List
                 </a>
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">{{ $patient->name }}</h1>
+                        <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
+                            <span class="bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full font-medium border border-indigo-100">
+                                #{{ $patient->bpjs_number ?? 'NO-BPJS' }}
+                            </span>
+                            <span>•</span>
+                            <span>{{ \Carbon\Carbon::parse($patient->dob)->format('d M Y') }} ({{ \Carbon\Carbon::parse($patient->dob)->age }} y.o)</span>
+                            <span>•</span>
+                            <span class="capitalize">{{ $patient->gender }}</span>
+                        </div>
+                    </div>
+                    @can('manage patients')
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('patients.edit', $patient) }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-50 transition shadow-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            Edit Profile
+                        </a>
+                        @if(!$patient->user_id)
+                        <form action="{{ route('patients.create-account', $patient) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-medium text-sm text-white hover:bg-indigo-700 transition shadow-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                                Create Account
+                            </button>
+                        </form>
+                        @endif
+                    </div>
+                    @endcan
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                
-                <!-- Left Sidebar: Patient Profile -->
-                <div class="lg:col-span-1">
-                    <div class="bg-white shadow-sm rounded-xl overflow-hidden sticky top-6">
-                        <!-- Profile Header -->
-                        <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 p-6 text-center text-white">
-                            <div class="w-24 h-24 mx-auto bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-3xl font-bold border-4 border-white/30 mb-4">
-                                {{ substr($patient->name, 0, 1) }}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column: Info & Stats -->
+                <div class="space-y-6">
+                    <!-- Key Details Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Patient Details</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0 mt-0.5 text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0c0 .883-.393 2-3 2m3 0c.883 0 2 .393 2 3m-8 6h16"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase">NIK</p>
+                                    <p class="font-medium text-gray-900">{{ $patient->nik }}</p>
+                                </div>
                             </div>
-                            <h1 class="text-xl font-bold truncate" title="{{ $patient->name }}">{{ $patient->name }}</h1>
-                            <p class="text-indigo-200 text-sm mt-1">NIK: {{ $patient->nik }}</p>
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0 mt-0.5 text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase">Blood Type</p>
+                                    <p class="font-medium text-gray-900">{{ $patient->blood_type ?? '-' }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0 mt-0.5 text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase">Phone</p>
+                                    <p class="font-medium text-gray-900">{{ $patient->phone }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0 mt-0.5 text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase">Address</p>
+                                    <p class="font-medium text-gray-900">{{ $patient->address }}</p>
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
-                        <!-- Profile Details -->
-                        <div class="p-6 space-y-6">
-                            <!-- Key Info -->
-                            <div class="space-y-3">
-                                <div class="flex items-center text-sm text-gray-600">
-                                    <span class="w-8 flex-shrink-0 text-center text-gray-400">
-                                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                                    </span>
-                                    <span class="font-medium ml-2">BPJS:</span>
-                                    <span class="ml-auto">{{ $patient->bpjs_number ?? '-' }}</span>
-                                </div>
-                                <div class="flex items-center text-sm text-gray-600">
-                                    <span class="w-8 flex-shrink-0 text-center text-gray-400">
-                                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    </span>
-                                    <span class="font-medium ml-2">DOB:</span>
-                                    <span class="ml-auto">{{ \Carbon\Carbon::parse($patient->dob)->format('d M Y') }}</span>
-                                </div>
-                                <div class="flex items-center text-sm text-gray-600">
-                                    <span class="w-8 flex-shrink-0 text-center text-gray-400">
-                                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                    </span>
-                                    <span class="font-medium ml-2">Gender:</span>
-                                    <span class="ml-auto capitalize">{{ $patient->gender }}</span>
-                                </div>
-                                <div class="flex items-center text-sm text-gray-600">
-                                    <span class="w-8 flex-shrink-0 text-center text-gray-400">
-                                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                                    </span>
-                                    <span class="font-medium ml-2">Blood Type:</span>
-                                    <span class="ml-auto font-bold">{{ $patient->blood_type ?? '-' }}</span>
-                                </div>
-                            </div>
+                    <!-- Stats Overview -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                            <p class="text-xs text-gray-500 uppercase mb-1">Total Visits</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ $patient->medicalRecords->count() }}</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                            <p class="text-xs text-gray-500 uppercase mb-1">Last Visit</p>
+                            <p class="text-lg font-bold text-gray-900">{{ $patient->medicalRecords->sortByDesc('visit_date')->first()?->visit_date->format('d M Y') ?? '-' }}</p>
+                        </div>
+                    </div>
 
-                            <hr class="border-gray-100">
-
-                            <!-- Contact -->
-                            <div class="space-y-3">
-                                <div class="flex items-start text-sm text-gray-600">
-                                    <span class="w-8 flex-shrink-0 text-center text-gray-400 mt-0.5">
-                                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                                    </span>
-                                    <span class="ml-2">{{ $patient->phone }}</span>
-                                </div>
-                                <div class="flex items-start text-sm text-gray-600">
-                                    <span class="w-8 flex-shrink-0 text-center text-gray-400 mt-0.5">
-                                        <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                    </span>
-                                    <span class="ml-2">{{ $patient->address }}</span>
-                                </div>
-                            </div>
-
-                            @can('manage patients')
-                            <hr class="border-gray-100">
-                            
-                            <!-- Actions -->
-                            <div class="space-y-2">
-                                <a href="{{ route('patients.edit', $patient) }}" class="block w-full text-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                                    Edit Profile
-                                </a>
-                                
-                                @if(!$patient->user_id)
-                                <form action="{{ route('patients.create-account', $patient) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="block w-full text-center px-4 py-2 bg-green-50 border border-green-200 rounded-lg text-sm font-medium text-green-700 hover:bg-green-100 transition-colors">
-                                        Create Account
-                                    </button>
-                                </form>
-                                @endif
-
-                                <form id="delete-form-{{ $patient->id }}" action="{{ route('patients.destroy', $patient) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    @unless(auth()->user()->hasRole('front_office'))
-                                    <button type="button" onclick="confirmDelete(event, 'delete-form-{{ $patient->id }}')" class="block w-full text-center px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-sm font-medium text-red-700 hover:bg-red-100 transition-colors">
-                                        Delete Patient
-                                    </button>
-                                    @endunless
-                                </form>
-                            </div>
-                            @endcan
+                    <!-- Allergies & Medical History -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        @if($patient->allergies)
+                        <div class="p-4 bg-red-50 border-b border-red-100">
+                            <h3 class="text-sm font-bold text-red-900 mb-1 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                Allergies
+                            </h3>
+                            <p class="text-sm text-red-700">{{ $patient->allergies }}</p>
+                        </div>
+                        @endif
+                        <div class="p-5">
+                            <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3">Medical History</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                {{ $patient->medical_history ?: 'No medical history recorded.' }}
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Main Content -->
-                <div class="lg:col-span-3 space-y-6">
-                    
-                    <!-- Stats Row -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                            <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg mr-4">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Total Visits</p>
-                                <p class="text-xl font-bold text-gray-900">{{ $patient->medicalRecords->count() }}</p>
-                            </div>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                            <div class="p-3 bg-blue-50 text-blue-600 rounded-lg mr-4">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Last Visit</p>
-                                <p class="text-xl font-bold text-gray-900">{{ $patient->medicalRecords->sortByDesc('visit_date')->first()?->visit_date->format('d M Y') ?? 'N/A' }}</p>
-                            </div>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                            <div class="p-3 bg-green-50 text-green-600 rounded-lg mr-4">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Next Appointment</p>
-                                @php
-                                    $nextAppt = $patient->appointments->where('status', 'scheduled')->where('appointment_date', '>=', now())->sortBy('appointment_date')->first();
-                                @endphp
-                                <p class="text-xl font-bold text-gray-900">{{ $nextAppt ? $nextAppt->appointment_date->format('d M') : 'None' }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Clinical Overview -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Allergies & History -->
-                        <div class="space-y-4">
-                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                                <h3 class="font-bold text-gray-900 mb-3 flex items-center">
-                                    <span class="w-2 h-6 bg-red-500 rounded-full mr-2"></span>
-                                    Allergies
-                                </h3>
-                                <div class="bg-red-50 text-red-800 p-3 rounded-lg text-sm">
-                                    {{ $patient->allergies ?: 'No known allergies' }}
-                                </div>
-                            </div>
-                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                                <h3 class="font-bold text-gray-900 mb-3 flex items-center">
-                                    <span class="w-2 h-6 bg-indigo-500 rounded-full mr-2"></span>
-                                    Medical History
-                                </h3>
-                                <div class="bg-indigo-50 text-indigo-800 p-3 rounded-lg text-sm">
-                                    {{ $patient->medical_history ?: 'No medical history recorded' }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Latest Vitals -->
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="font-bold text-gray-900">Latest Vitals</h3>
-                                <span class="text-xs text-gray-500">
-                                    {{ $patient->medicalRecords->whereNotNull('vital_signs')->sortByDesc('visit_date')->first()?->visit_date->format('d M Y') ?? '' }}
-                                </span>
-                            </div>
-                            
-                            @php
-                                $latestVitals = $patient->medicalRecords->whereNotNull('vital_signs')->sortByDesc('visit_date')->first()?->vital_signs;
-                            @endphp
-
-                            @if($latestVitals)
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="p-3 bg-gray-50 rounded-lg">
-                                        <p class="text-xs text-gray-500 uppercase">Blood Pressure</p>
-                                        <p class="text-lg font-bold text-gray-900">
-                                            {{ $latestVitals['systolic'] ?? '-' }}/{{ $latestVitals['diastolic'] ?? '-' }}
-                                            <span class="text-xs font-normal text-gray-500">mmHg</span>
-                                        </p>
-                                    </div>
-                                    <div class="p-3 bg-gray-50 rounded-lg">
-                                        <p class="text-xs text-gray-500 uppercase">Heart Rate</p>
-                                        <p class="text-lg font-bold text-gray-900">
-                                            {{ $latestVitals['heart_rate'] ?? '-' }}
-                                            <span class="text-xs font-normal text-gray-500">bpm</span>
-                                        </p>
-                                    </div>
-                                    <div class="p-3 bg-gray-50 rounded-lg">
-                                        <p class="text-xs text-gray-500 uppercase">Weight</p>
-                                        <p class="text-lg font-bold text-gray-900">
-                                            {{ $latestVitals['weight'] ?? '-' }}
-                                            <span class="text-xs font-normal text-gray-500">kg</span>
-                                        </p>
-                                    </div>
-                                    <div class="p-3 bg-gray-50 rounded-lg">
-                                        <p class="text-xs text-gray-500 uppercase">Temp</p>
-                                        <p class="text-lg font-bold text-gray-900">
-                                            {{ $latestVitals['temperature'] ?? '-' }}
-                                            <span class="text-xs font-normal text-gray-500">°C</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            @else
-                                <p class="text-sm text-gray-500 italic">No vital signs recorded yet.</p>
-                            @endif
-                            
-                            <div class="mt-4 pt-4 border-t border-gray-100">
-                                <canvas id="vitalSignsChart" height="100"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tabs Section -->
+                <!-- Right Column: Tabs & Content -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Tabs -->
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" x-data="{ tab: 'medical_records' }">
                         <div class="border-b border-gray-200 px-6">
                             <nav class="-mb-px flex space-x-8">
                                 <button @click="tab = 'medical_records'" 
                                     :class="{ 'border-indigo-500 text-indigo-600': tab === 'medical_records', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'medical_records' }"
-                                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
-                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                    Medical History
+                                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center transition-colors">
+                                    Medical Records
                                 </button>
                                 <button @click="tab = 'appointments'" 
                                     :class="{ 'border-indigo-500 text-indigo-600': tab === 'appointments', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'appointments' }"
-                                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center">
-                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center transition-colors">
                                     Appointments
+                                </button>
+                                <button @click="tab = 'vitals'" 
+                                    :class="{ 'border-indigo-500 text-indigo-600': tab === 'vitals', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'vitals' }"
+                                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center transition-colors">
+                                    Vitals Chart
                                 </button>
                             </nav>
                         </div>
@@ -266,7 +167,7 @@
                                         <div class="relative pl-8 group">
                                             <div class="absolute -left-2.5 top-0 h-5 w-5 rounded-full border-4 border-white bg-indigo-500 shadow-sm group-hover:scale-110 transition-transform"></div>
                                             
-                                            <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                                            <div class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow group-hover:border-indigo-100">
                                                 <div class="flex justify-between items-start mb-2">
                                                     <div>
                                                         <h4 class="text-lg font-bold text-gray-900">{{ $record->diagnosis }}</h4>
@@ -278,25 +179,20 @@
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                                     </a>
                                                 </div>
-                                                <div class="text-gray-600 text-sm mt-2">
-                                                    <span class="font-medium">Treatment:</span> {{ Str::limit($record->treatment, 150) }}
+                                                <div class="text-gray-600 text-sm mt-2 line-clamp-2">
+                                                    <span class="font-medium">Treatment:</span> {{ $record->treatment }}
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
                                 </div>
                             @else
-                                <div class="text-center py-12">
-                                    <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-300">
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                <div class="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-gray-400">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                     </div>
-                                    <h3 class="text-lg font-medium text-gray-900">No Medical Records</h3>
-                                    <p class="text-gray-500 mt-1">Start by adding a new medical record.</p>
-                                    @unless(auth()->user()->hasRole('front_office'))
-                                    <a href="{{ route('medical_records.create', ['patient_id' => $patient->id]) }}" class="inline-block mt-4 text-indigo-600 font-medium hover:text-indigo-800">
-                                        Create First Record &rarr;
-                                    </a>
-                                    @endunless
+                                    <h3 class="text-sm font-medium text-gray-900">No Medical Records</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Start by adding a new medical record.</p>
                                 </div>
                             @endif
                         </div>
@@ -304,7 +200,7 @@
                         <!-- Appointments Content -->
                         <div x-show="tab === 'appointments'" class="p-6" style="display: none;">
                             <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-lg font-bold text-gray-900">History</h3>
+                                <h3 class="text-lg font-bold text-gray-900">Appointment History</h3>
                                 <a href="{{ route('appointments.create', ['patient_id' => $patient->id]) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 transition shadow-sm">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                     Book Appointment
@@ -345,20 +241,24 @@
                                     @endforeach
                                 </div>
                             @else
-                                <div class="text-center py-12">
-                                    <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 text-green-300">
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <div class="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-gray-400">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                     </div>
-                                    <h3 class="text-lg font-medium text-gray-900">No Appointments</h3>
-                                    <p class="text-gray-500 mt-1">No past or upcoming appointments.</p>
-                                    <a href="{{ route('appointments.create', ['patient_id' => $patient->id]) }}" class="inline-block mt-4 text-green-600 font-medium hover:text-green-800">
-                                        Book First Appointment &rarr;
-                                    </a>
+                                    <h3 class="text-sm font-medium text-gray-900">No Appointments</h3>
+                                    <p class="text-sm text-gray-500 mt-1">No past or upcoming appointments.</p>
                                 </div>
                             @endif
                         </div>
-                    </div>
 
+                        <!-- Vitals Chart Content -->
+                        <div x-show="tab === 'vitals'" class="p-6" style="display: none;">
+                            <h3 class="text-lg font-bold text-gray-900 mb-6">Vitals Trends</h3>
+                            <div class="h-80">
+                                <canvas id="vitalSignsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
