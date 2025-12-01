@@ -203,10 +203,10 @@ class DashboardController extends Controller
 
     private function getPharmacistDashboard($user)
     {
-        // Common Stats
-        $totalPatients = Patient::count();
-        $todayAppointments = Appointment::whereDate('appointment_date', today())->count();
-        $activeQueues = Queue::whereIn('status', ['waiting', 'waiting_screening', 'screening_completed', 'in_consultation', 'waiting_pharmacy', 'waiting_payment', 'called'])->count();
+        // Pharmacist Specific Stats
+        $pendingPrescriptionsCount = Queue::where('status', 'waiting_pharmacy')->count();
+        $lowStockCount = \App\Models\Medicine::whereColumn('stock', '<=', 'min_stock')->count();
+        $totalMedicines = \App\Models\Medicine::count();
 
         // Pharmacist Data
         $pharmacyQueues = Queue::where('status', 'waiting_pharmacy')
@@ -219,43 +219,12 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Charts Data
-        $visitLabels = collect();
-        $visitData = collect();
-        $appointmentLabels = collect();
-        $appointmentData = collect();
-        
-        $monthlyVisits = MedicalRecord::selectRaw('MONTH(visit_date) as month, COUNT(*) as count')
-            ->whereYear('visit_date', date('Y'))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
-
-        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        foreach ($monthlyVisits as $visit) {
-            $visitLabels->push($months[$visit->month - 1]);
-            $visitData->push($visit->count);
-        }
-
-        $appointmentStats = Appointment::selectRaw('status, COUNT(*) as count')
-            ->groupBy('status')
-            ->get();
-
-        foreach ($appointmentStats as $stat) {
-            $appointmentLabels->push(ucfirst(str_replace('_', ' ', $stat->status)));
-            $appointmentData->push($stat->count);
-        }
-
         return view('dashboards.pharmacist', compact(
-            'totalPatients',
-            'todayAppointments',
-            'activeQueues',
+            'pendingPrescriptionsCount',
+            'lowStockCount',
+            'totalMedicines',
             'pharmacyQueues',
-            'lowStockMedicines',
-            'visitLabels',
-            'visitData',
-            'appointmentLabels',
-            'appointmentData'
+            'lowStockMedicines'
         ));
     }
 
