@@ -73,6 +73,12 @@
                                             @php
                                                 $colors = [
                                                     'waiting' => 'bg-yellow-100 text-yellow-800',
+                                                    'waiting_screening' => 'bg-orange-100 text-orange-800',
+                                                    'screening_completed' => 'bg-blue-100 text-blue-800',
+                                                    'in_consultation' => 'bg-indigo-100 text-indigo-800',
+                                                    'consultation_completed' => 'bg-purple-100 text-purple-800',
+                                                    'waiting_pharmacy' => 'bg-teal-100 text-teal-800',
+                                                    'waiting_payment' => 'bg-pink-100 text-pink-800',
                                                     'called' => 'bg-indigo-100 text-indigo-800',
                                                     'completed' => 'bg-green-100 text-green-800',
                                                     'skipped' => 'bg-red-100 text-red-800',
@@ -90,21 +96,16 @@
                                                     <input type="hidden" name="status" value="called">
                                                     <button type="submit" class="text-indigo-600 hover:text-indigo-900 font-bold">Call</button>
                                                 </form>
+
+                                                <form id="delete-queue-{{ $queue->id }}" action="{{ route('queues.destroy', $queue) }}" method="POST" class="inline-block ml-2">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" onclick="confirmDelete(event, 'delete-queue-{{ $queue->id }}')" class="text-red-600 hover:text-red-900 font-bold">Delete</button>
+                                                </form>
                                             @endif
 
                                             @if($queue->status == 'called')
-                                                <form action="{{ route('queues.updateStatus', $queue) }}" method="POST" class="inline-block">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input type="hidden" name="status" value="completed">
-                                                    <button type="submit" class="text-green-600 hover:text-green-900">Complete</button>
-                                                </form>
-                                                <form action="{{ route('queues.updateStatus', $queue) }}" method="POST" class="inline-block">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input type="hidden" name="status" value="skipped">
-                                                    <button type="submit" class="text-red-600 hover:text-red-900">Skip</button>
-                                                </form>
+                                                <span class="text-indigo-600 font-bold">In Progress</span>
                                             @endif
                                         </td>
                                     </tr>

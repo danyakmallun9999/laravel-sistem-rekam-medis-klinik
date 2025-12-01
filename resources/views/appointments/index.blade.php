@@ -50,12 +50,18 @@
                                             @php
                                                 $statusClasses = [
                                                     'scheduled' => 'bg-blue-100 text-blue-800',
+                                                    'waiting_screening' => 'bg-yellow-100 text-yellow-800',
+                                                    'screening_completed' => 'bg-indigo-100 text-indigo-800',
+                                                    'in_consultation' => 'bg-purple-100 text-purple-800',
+                                                    'consultation_completed' => 'bg-pink-100 text-pink-800',
+                                                    'waiting_pharmacy' => 'bg-orange-100 text-orange-800',
+                                                    'waiting_payment' => 'bg-teal-100 text-teal-800',
                                                     'completed' => 'bg-green-100 text-green-800',
                                                     'cancelled' => 'bg-red-100 text-red-800',
                                                 ];
                                             @endphp
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClasses[$appointment->status] }}">
-                                                {{ ucfirst($appointment->status) }}
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClasses[$appointment->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                                {{ ucfirst(str_replace('_', ' ', $appointment->status)) }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -66,8 +72,8 @@
                                                 <form action="{{ route('appointments.updateStatus', $appointment) }}" method="POST" class="inline-block">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <input type="hidden" name="status" value="completed">
-                                                    <button type="submit" class="text-green-600 hover:text-green-900 mr-2" onclick="return confirm('Mark as completed?')">Complete</button>
+                                                    <input type="hidden" name="status" value="waiting_screening">
+                                                    <button type="submit" class="text-indigo-600 hover:text-indigo-900 mr-2">Check In</button>
                                                 </form>
                                                 <form action="{{ route('appointments.updateStatus', $appointment) }}" method="POST" class="inline-block">
                                                     @csrf
@@ -76,7 +82,7 @@
                                                     <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Cancel appointment?')">Cancel</button>
                                                 </form>
                                             @else
-                                                <span class="text-gray-400">No actions</span>
+                                                <span class="text-gray-400">In Progress</span>
                                             @endif
                                         </td>
                                     </tr>

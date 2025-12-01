@@ -66,6 +66,16 @@ class InvoiceController extends Controller
     public function updateStatus(Request $request, Invoice $invoice)
     {
         $invoice->update(['status' => 'paid']);
-        return redirect()->back()->with('success', 'Invoice marked as paid.');
+
+        // Update Appointment and Queue status to 'completed'
+        if ($invoice->appointment) {
+            $invoice->appointment->update(['status' => 'completed']);
+            
+            if ($invoice->appointment->queue) {
+                $invoice->appointment->queue->update(['status' => 'completed']);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Invoice marked as paid. Queue completed.');
     }
 }

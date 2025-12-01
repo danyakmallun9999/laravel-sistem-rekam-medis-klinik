@@ -10,9 +10,21 @@ class MedicalRecord extends Model
 {
     use HasFactory, Auditable;
     protected $fillable = [
-        'patient_id', 'doctor_id', 'diagnosis', 'treatment', 'prescription', 'visit_date',
+        'patient_id',
+        'doctor_id',
+        'appointment_id',
+        'diagnosis',
+        'treatment',
+        'prescription',
+        'visit_date',
         'soap_data',
-        'vital_signs',
+        'vital_signs', // Keeping this as it was in the original, and the instruction's partial list also includes it.
+        'systolic',
+        'diastolic',
+        'heart_rate',
+        'temperature',
+        'weight',
+        'height',
         'clinical_analysis',
         'attachments',
         'icd10_code',

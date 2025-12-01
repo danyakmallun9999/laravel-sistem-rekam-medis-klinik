@@ -12,7 +12,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified', 'role:admin|doctor|staff'])
+    ->middleware(['auth', 'verified', 'role:admin|doctor|nurse|pharmacist|front_office'])
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -28,10 +28,21 @@ Route::middleware('auth')->group(function () {
     Route::post('patients/{patient}/create-account', [\App\Http\Controllers\PatientController::class, 'createAccount'])->name('patients.create-account');
     Route::resource('patients', \App\Http\Controllers\PatientController::class);
     Route::resource('doctors', \App\Http\Controllers\DoctorController::class);
-    Route::group(['middleware' => ['role:admin|doctor']], function () {
+    Route::group(['middleware' => ['role:admin|doctor|front_office']], function () {
         Route::resource('schedules', \App\Http\Controllers\ScheduleController::class);
     });
     Route::resource('medical_records', MedicalRecordController::class);
+
+    // Patient Flow Routes
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/flow/screening', [\App\Http\Controllers\PatientFlowController::class, 'screening'])->name('flow.screening')->middleware('role:nurse');
+        Route::get('/screening/{appointment}', [\App\Http\Controllers\ScreeningController::class, 'create'])->name('screening.create')->middleware('role:nurse');
+        Route::post('/screening/{appointment}', [\App\Http\Controllers\ScreeningController::class, 'store'])->name('screening.store')->middleware('role:nurse');
+        Route::get('/flow/consultation', [\App\Http\Controllers\PatientFlowController::class, 'consultation'])->name('flow.consultation')->middleware('role:doctor');
+        Route::get('/flow/pharmacy', [\App\Http\Controllers\PatientFlowController::class, 'pharmacy'])->name('flow.pharmacy')->middleware('role:pharmacist');
+        Route::get('/flow/cashier', [\App\Http\Controllers\PatientFlowController::class, 'cashier'])->name('flow.cashier')->middleware('role:front_office|admin'); // Assuming cashier is front office or admin
+        Route::patch('/flow/appointments/{appointment}/status', [\App\Http\Controllers\PatientFlowController::class, 'updateStatus'])->name('flow.update-status');
+    });
 
     // Pharmacy Routes
     Route::prefix('pharmacy')->name('pharmacy.')->group(function () {
@@ -48,7 +59,8 @@ Route::middleware('auth')->group(function () {
     });
 
     // Queue Routes
-    Route::resource('queues', QueueController::class)->only(['index', 'create', 'store']);
+    Route::get('/queues/display', [\App\Http\Controllers\QueueController::class, 'display'])->name('queues.display');
+    Route::resource('queues', QueueController::class)->only(['index', 'create', 'store', 'destroy']);
     Route::patch('/queues/{queue}/status', [QueueController::class, 'updateStatus'])->name('queues.updateStatus');
 
     // BPJS Mock Route
@@ -56,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/bpjs/check', [BPJSController::class, 'check'])->name('bpjs.check');
 
     // Appointment Routes
+    Route::get('/appointments/doctors-slots', [\App\Http\Controllers\AppointmentController::class, 'getDoctorSlots'])->name('appointments.slots');
     Route::resource('appointments', \App\Http\Controllers\AppointmentController::class);
     Route::patch('/appointments/{appointment}/status', [\App\Http\Controllers\AppointmentController::class, 'updateStatus'])->name('appointments.updateStatus');
 

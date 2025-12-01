@@ -13,8 +13,24 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        $schedules = Schedule::with('doctor')->latest()->paginate(10);
-        return view('schedules.index', compact('schedules'));
+        // Data for List View (Grouped by Day)
+        $schedules = Schedule::with('doctor')->get()->groupBy('day_of_week');
+        $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        $sortedSchedules = collect();
+        foreach ($days as $day) {
+            if (isset($schedules[$day])) {
+                $sortedSchedules[$day] = $schedules[$day];
+            }
+        }
+
+        // Data for Grid View (Doctors x Days)
+        $doctors = Doctor::with('schedules')->get();
+        
+        return view('schedules.index', [
+            'schedules' => $sortedSchedules,
+            'doctors' => $doctors,
+            'days' => $days
+        ]);
     }
 
     /**

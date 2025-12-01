@@ -15,6 +15,7 @@ class Appointment extends Model
         'appointment_date',
         'status',
         'notes',
+        'type',
     ];
 
     protected $casts = [
@@ -34,5 +35,15 @@ class Appointment extends Model
     public function invoice()
     {
         return $this->hasOne(Invoice::class);
+    }
+
+    public function queue()
+    {
+        return $this->hasOne(Queue::class);
+    }
+
+    public function medicalRecord()
+    {
+        return $this->hasOne(MedicalRecord::class);
     }
 }

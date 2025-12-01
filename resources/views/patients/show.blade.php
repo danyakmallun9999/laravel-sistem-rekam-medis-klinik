@@ -74,23 +74,25 @@
                 {{ $patient->address }}
             </div>
             <div class="flex justify-end gap-3 items-center">
-                @if(!$patient->user_id)
-                    <form action="{{ route('patients.create-account', $patient) }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="text-green-600 hover:text-green-800 font-medium flex items-center gap-1">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
-                            Create Account
-                        </button>
-                    </form>
+                @can('manage patients')
+                    @if(!$patient->user_id)
+                        <form action="{{ route('patients.create-account', $patient) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="text-green-600 hover:text-green-800 font-medium flex items-center gap-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                                Create Account
+                            </button>
+                        </form>
+                        <span class="text-gray-300">|</span>
+                    @endif
+                    <a href="{{ route('patients.edit', $patient) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">Edit Profile</a>
                     <span class="text-gray-300">|</span>
-                @endif
-                <a href="{{ route('patients.edit', $patient) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">Edit Profile</a>
-                <span class="text-gray-300">|</span>
-                <form id="delete-form-{{ $patient->id }}" action="{{ route('patients.destroy', $patient) }}" method="POST" class="inline-block">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" onclick="confirmDelete(event, 'delete-form-{{ $patient->id }}')" class="text-red-600 hover:text-red-800 font-medium">Delete</button>
-                </form>
+                    <form id="delete-form-{{ $patient->id }}" action="{{ route('patients.destroy', $patient) }}" method="POST" class="inline-block">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" onclick="confirmDelete(event, 'delete-form-{{ $patient->id }}')" class="text-red-600 hover:text-red-800 font-medium">Delete</button>
+                    </form>
+                @endcan
             </div>
         </div>
 

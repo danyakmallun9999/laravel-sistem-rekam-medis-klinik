@@ -40,7 +40,7 @@
             </li>
 
             <!-- Patients -->
-            @can('manage patients')
+            @if((auth()->user()->can('manage patients') && !auth()->user()->hasRole('nurse')) || auth()->user()->hasRole('doctor'))
             <li>
                 <a href="{{ route('patients.index') }}" 
                    class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
@@ -54,10 +54,10 @@
                     </div>
                 </a>
             </li>
-            @endcan
+            @endif
 
             <!-- Medical Records -->
-            @can('view medical records')
+            @if(auth()->user()->can('view medical records') && !auth()->user()->hasRole('nurse'))
             <li>
                 <a href="{{ route('medical_records.index') }}" 
                    class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
@@ -71,7 +71,7 @@
                     </div>
                 </a>
             </li>
-            @endcan
+            @endif
 
             <!-- Doctors -->
             @can('manage doctors')
@@ -89,6 +89,23 @@
                 </a>
             </li>
             @endcan
+
+            <!-- Schedules -->
+            @role('admin|doctor')
+            <li>
+                <a href="{{ route('schedules.index') }}" 
+                   class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
+                   :class="request()->routeIs('schedules.*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-colors" :class="request()->routeIs('schedules.*') ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="ml-3 text-sm whitespace-nowrap" x-show="sidebarOpen">Schedules</span>
+                    <div x-show="!sidebarOpen" class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap pointer-events-none">
+                        Schedules
+                    </div>
+                </a>
+            </li>
+            @endrole
 
             <!-- Divider -->
             @can('manage pharmacy')
@@ -135,7 +152,7 @@
             </li>
 
             <!-- Appointments -->
-            @can('manage patients')
+            @if(auth()->user()->can('manage patients') && !auth()->user()->hasRole('nurse'))
             <li>
                 <a href="{{ route('appointments.index') }}" 
                    class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
@@ -149,7 +166,7 @@
                     </div>
                 </a>
             </li>
-            @endcan
+            @endif
 
             <!-- Billing -->
             @role('admin')

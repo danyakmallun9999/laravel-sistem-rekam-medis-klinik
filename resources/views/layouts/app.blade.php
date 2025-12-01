@@ -79,6 +79,17 @@
         </div>
 
         <script>
+            // SweetAlert for Success Message
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: "{{ session('success') }}",
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
+
             function confirmDelete(event, formId) {
                 event.preventDefault();
                 Swal.fire({

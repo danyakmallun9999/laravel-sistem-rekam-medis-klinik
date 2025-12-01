@@ -16,11 +16,11 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @can('manage patients')
+                    @if((auth()->user()->can('manage patients') && !auth()->user()->hasRole('nurse')) || auth()->user()->hasRole('doctor'))
                     <x-nav-link :href="route('patients.index')" :active="request()->routeIs('patients.*')">
                         {{ __('Patients') }}
                     </x-nav-link>
-                    @endcan
+                    @endif
 
                     @can('manage doctors')
                     <x-nav-link :href="route('doctors.index')" :active="request()->routeIs('doctors.*')">
@@ -28,11 +28,17 @@
                     </x-nav-link>
                     @endcan
 
-                    @can('view medical records')
+                    @if(auth()->user()->can('view medical records') && !auth()->user()->hasRole('nurse'))
                     <x-nav-link :href="route('medical_records.index')" :active="request()->routeIs('medical_records.*')">
                         {{ __('Medical Records') }}
                     </x-nav-link>
-                    @endcan
+                    @endif
+
+                    @role('admin|doctor')
+                    <x-nav-link :href="route('schedules.index')" :active="request()->routeIs('schedules.*')">
+                        {{ __('Schedules') }}
+                    </x-nav-link>
+                    @endrole
 
                     @can('manage pharmacy')
                     <x-nav-link :href="route('pharmacy.inventory')" :active="request()->routeIs('pharmacy.inventory*')">

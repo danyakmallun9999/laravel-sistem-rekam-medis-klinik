@@ -33,8 +33,9 @@ class MedicalRecordController extends Controller
         $doctors = Doctor::all();
         $medicines = \App\Models\Medicine::where('stock', '>', 0)->get();
         $selectedPatientId = $request->get('patient_id');
+        $appointmentId = $request->get('appointment_id');
 
-        return view('medical_records.create', compact('patients', 'doctors', 'medicines', 'selectedPatientId'));
+        return view('medical_records.create', compact('patients', 'doctors', 'medicines', 'selectedPatientId', 'appointmentId'));
     }
 
     public function store(Request $request)
