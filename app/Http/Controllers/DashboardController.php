@@ -9,6 +9,7 @@ use App\Models\MedicalRecord;
 use App\Models\Invoice;
 use App\Models\Appointment;
 use App\Models\Queue;
+use App\Models\Medicine;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -209,12 +210,12 @@ class DashboardController extends Controller
 
         // Pharmacist Data
         $pharmacyQueues = Queue::where('status', 'waiting_pharmacy')
-            ->with(['patient', 'appointment'])
+            ->with(['patient', 'appointment.medicalRecord'])
             ->orderBy('updated_at')
             ->take(10)
             ->get();
 
-        $lowStockMedicines = Medicine::whereColumn('stock', '<=', 'min_stock')
+        $lowStockMedicines = \App\Models\Medicine::whereColumn('stock', '<=', 'min_stock')
             ->take(5)
             ->get();
 

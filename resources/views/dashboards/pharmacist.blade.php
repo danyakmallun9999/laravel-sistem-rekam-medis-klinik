@@ -81,7 +81,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <a href="{{ route('pharmacy.prescriptions.show', ['record' => $queue->appointment->medical_record_id]) }}" class="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded hover:bg-indigo-700 transition-colors shadow-sm">
+                                    <a href="{{ route('pharmacy.prescriptions.show', ['record' => $queue->appointment->medicalRecord->id ?? 0]) }}" class="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded hover:bg-indigo-700 transition-colors shadow-sm">
                                         Process
                                     </a>
                                 </div>
