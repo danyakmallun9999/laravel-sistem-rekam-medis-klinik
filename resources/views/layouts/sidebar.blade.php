@@ -1,4 +1,4 @@
-<aside class="fixed inset-y-0 left-0 z-30 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col"
+<aside class="fixed inset-y-0 left-0 z-30 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col print:hidden"
        :class="sidebarOpen ? 'w-64' : 'w-20'">
     
     <!-- Logo & Toggle -->

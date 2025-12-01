@@ -19,11 +19,11 @@
         <div class="min-h-screen flex" x-data="{ sidebarOpen: true }">
             @include('layouts.sidebar')
 
-            <div class="flex-1 flex flex-col transition-all duration-300 ease-in-out"
+            <div class="flex-1 flex flex-col transition-all duration-300 ease-in-out print:ml-0"
                  :class="sidebarOpen ? 'ml-64' : 'ml-20'">
                 <!-- Page Heading -->
                 @isset($header)
-                    <header class="bg-white border-b border-gray-200 h-16 flex items-center">
+                    <header class="bg-white border-b border-gray-200 h-16 flex items-center print:hidden">
                         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex justify-between items-center">
                             {{ $header }}
                             

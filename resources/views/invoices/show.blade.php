@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-12 print:py-0">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 print:max-w-none">
             <!-- Action Bar -->
             <div class="flex justify-between items-center mb-6 print:hidden">
                 <a href="{{ route('invoices.index') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors">
