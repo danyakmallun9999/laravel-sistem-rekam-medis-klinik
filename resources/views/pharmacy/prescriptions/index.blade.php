@@ -39,7 +39,14 @@
                                             {{ $record->prescriptionItems->count() }} items
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <a href="{{ route('pharmacy.prescriptions.show', $record) }}" class="text-indigo-600 hover:text-indigo-900">Process</a>
+                                            @if($record->appointment && $record->appointment->status == 'waiting_pharmacy')
+                                                <a href="{{ route('pharmacy.prescriptions.show', $record) }}" class="text-indigo-600 hover:text-indigo-900 font-bold">Process</a>
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    Dispensed
+                                                </span>
+                                                <a href="{{ route('pharmacy.prescriptions.show', $record) }}" class="ml-2 text-gray-400 hover:text-gray-600 text-xs">View</a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty

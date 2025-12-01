@@ -53,6 +53,11 @@ class MedicalRecord extends Model
         return $this->belongsTo(Doctor::class);
     }
 
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class);
+    }
+
     public function prescriptionItems()
     {
         return $this->hasMany(PrescriptionItem::class);

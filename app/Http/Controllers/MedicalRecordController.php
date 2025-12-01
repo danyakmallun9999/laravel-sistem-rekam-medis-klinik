@@ -106,7 +106,7 @@ class MedicalRecordController extends Controller
     public function edit(MedicalRecord $medicalRecord)
     {
         if (!auth()->user()->hasRole('admin')) {
-            if (auth()->user()->hasRole('front_office') || auth()->user()->hasRole('doctor')) {
+            if (auth()->user()->hasRole('front_office')) {
                 abort(403, 'You are not authorized to edit medical records.');
             }
             if (!$medicalRecord->isLatestForPatient()) {
@@ -123,7 +123,7 @@ class MedicalRecordController extends Controller
     public function update(Request $request, MedicalRecord $medicalRecord)
     {
         if (!auth()->user()->hasRole('admin')) {
-            if (auth()->user()->hasRole('front_office') || auth()->user()->hasRole('doctor')) {
+            if (auth()->user()->hasRole('front_office')) {
                 abort(403, 'You are not authorized to edit medical records.');
             }
             if (!$medicalRecord->isLatestForPatient()) {

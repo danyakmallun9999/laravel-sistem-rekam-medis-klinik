@@ -299,17 +299,12 @@
                 document.getElementById('body_map_data').value = json;
             });
 
-            // ... existing medicine script ...
-            let medicineIndex = 0;
-            const medicines = @json($medicines);
-            const existingItems = @json($medicalRecord->prescriptionItems);
-
-            // Load existing items
-            if (existingItems && existingItems.length > 0) {
-                existingItems.forEach(item => addMedicineRow(item));
-            }
         });
         
+        let medicineIndex = 0;
+        const medicines = @json($medicines);
+        const existingItems = @json($medicalRecord->prescriptionItems);
+
         function addMedicineRow(item = null) {
             const tbody = document.getElementById('prescription-body');
             const row = document.createElement('tr');

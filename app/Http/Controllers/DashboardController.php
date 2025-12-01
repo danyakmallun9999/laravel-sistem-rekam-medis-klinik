@@ -189,6 +189,12 @@ class DashboardController extends Controller
             ->orderBy('start_time')
             ->get();
 
+        // 4. Pending Payments (Cashier Queue)
+        $pendingPayments = Appointment::where('status', 'waiting_payment')
+            ->with(['patient', 'doctor'])
+            ->orderBy('updated_at')
+            ->get();
+
         return view('dashboards.front_office', compact(
             'totalPatients',
             'todayAppointmentsCount',
@@ -197,7 +203,8 @@ class DashboardController extends Controller
             'activeQueues',
             'patients',
             'doctors',
-            'schedules'
+            'schedules',
+            'pendingPayments'
         ));
     }
 

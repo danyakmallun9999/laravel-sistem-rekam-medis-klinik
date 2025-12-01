@@ -168,6 +168,23 @@
             </li>
             @endif
 
+            <!-- Invoices -->
+            @role('front_office')
+            <li>
+                <a href="{{ route('invoices.index') }}" 
+                   class="flex items-center px-3 py-2.5 rounded-md transition-all group relative"
+                   :class="request()->routeIs('invoices.*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-colors" :class="request()->routeIs('invoices.*') ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path>
+                    </svg>
+                    <span class="ml-3 text-sm whitespace-nowrap" x-show="sidebarOpen">Billing</span>
+                    <div x-show="!sidebarOpen" class="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap pointer-events-none">
+                        Billing
+                    </div>
+                </a>
+            </li>
+            @endrole
+
             <!-- Billing -->
             @role('admin')
             <li>

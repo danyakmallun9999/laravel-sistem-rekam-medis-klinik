@@ -124,6 +124,33 @@
                         </div>
                     </div>
 
+                    <!-- Pending Payments (Cashier) -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden border-t-4 border-t-green-500">
+                        <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                            <h3 class="font-bold text-gray-900">Pending Payments</h3>
+                            <span class="text-xs font-medium text-gray-500 bg-white border border-gray-200 px-2 py-1 rounded-md">{{ $pendingPayments->count() }} Waiting</span>
+                        </div>
+                        <div class="divide-y divide-gray-100 max-h-[300px] overflow-y-auto">
+                            @forelse($pendingPayments as $payment)
+                                <div class="p-4 hover:bg-gray-50 transition-colors">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <p class="font-semibold text-gray-900 text-sm">{{ $payment->patient->name }}</p>
+                                            <p class="text-xs text-gray-500">{{ $payment->doctor->name }}</p>
+                                        </div>
+                                        <a href="{{ route('invoices.create', ['appointment_id' => $payment->id]) }}" class="text-xs bg-green-50 text-green-700 border border-green-200 px-3 py-1 rounded-md hover:bg-green-100 font-semibold transition-colors">
+                                            Process
+                                        </a>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="p-8 text-center text-gray-500 text-sm">
+                                    No pending payments.
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+
                     <!-- Scheduled Appointments (Secondary) -->
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                         <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
@@ -288,7 +315,7 @@
                                                 </button>
                                             </form>
                                         @elseif($queue->status == 'waiting_payment')
-                                            <a href="{{ route('invoices.create', ['patient_id' => $queue->patient_id]) }}" class="bg-white border border-green-200 text-green-600 p-2 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm" title="Process Payment">
+                                            <a href="{{ route('invoices.create', ['appointment_id' => $queue->appointment_id]) }}" class="bg-white border border-green-200 text-green-600 p-2 rounded-lg hover:bg-green-600 hover:text-white transition-all shadow-sm" title="Process Payment">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                             </a>
                                         @endif
