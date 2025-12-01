@@ -322,7 +322,7 @@
             </div>
 
             <!-- Quick Links Footer -->
-            <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="mt-8 grid grid-cols-2 md:grid-cols-3 gap-6">
                 {{-- Register New Patient button removed as per user request (confused with Add Medical Record?) --}}
                 <a href="{{ route('patients.index') }}" class="block p-5 bg-white border border-gray-200 rounded-xl hover:border-indigo-500 hover:shadow-md transition-all text-center group">
                     <div class="text-gray-400 group-hover:text-indigo-600 mb-2 transition-colors">
