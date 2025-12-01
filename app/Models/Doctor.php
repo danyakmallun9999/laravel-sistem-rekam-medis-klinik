@@ -9,7 +9,7 @@ use App\Traits\Auditable;
 class Doctor extends Model
 {
     use HasFactory, Auditable;
-    protected $fillable = ['name', 'specialization', 'phone', 'email'];
+    protected $fillable = ['name', 'specialization', 'phone', 'email', 'consultation_fee'];
 
     public function medicalRecords()
     {

@@ -47,7 +47,7 @@ class InvoiceController extends Controller
                 // Add Consultation Fee
                 $prefilledItems[] = [
                     'description' => 'Consultation Fee - ' . $selectedAppointment->doctor->specialization,
-                    'amount' => 50000 // Default fee, could be dynamic
+                    'amount' => $selectedAppointment->doctor->consultation_fee ?? 50000 // Use doctor's fee or default
                 ];
 
                 // Add Prescription Items

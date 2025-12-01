@@ -22,6 +22,12 @@
                 </div>
 
                 <div>
+                    <label for="consultation_fee" class="block text-sm font-medium text-gray-700">Consultation Fee (Rp)</label>
+                    <input type="number" name="consultation_fee" id="consultation_fee" value="{{ old('consultation_fee', 50000) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required min="0">
+                    @error('consultation_fee') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
                     <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
                     <input type="text" name="phone" id="phone" value="{{ old('phone') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                     @error('phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror

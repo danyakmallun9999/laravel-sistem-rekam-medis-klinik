@@ -62,6 +62,10 @@ class MedicalRecordController extends Controller
             'medicines.*.instructions' => 'nullable|string',
             'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'body_map_data' => 'nullable|string', // JSON string
+            'icd10_code' => 'nullable|string|max:255',
+            'icd10_name' => 'nullable|string|max:255',
+            'icd9_code' => 'nullable|string|max:255',
+            'icd9_name' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('attachments')) {
@@ -146,7 +150,12 @@ class MedicalRecordController extends Controller
             'medicines.*.instructions' => 'nullable|string',
             'medicines.*.instructions' => 'nullable|string',
             'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'body_map_data' => 'nullable|string', // JSON string
+            'icd10_code' => 'nullable|string|max:255',
+            'icd10_name' => 'nullable|string|max:255',
+            'icd9_code' => 'nullable|string|max:255',
+            'icd9_name' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('attachments')) {

@@ -88,6 +88,37 @@
                 </div>
             </div>
             @endif
+            
+            <!-- ICD Coding -->
+            @if($medicalRecord->icd10_code || $medicalRecord->icd9_code)
+            <div class="bg-blue-50 rounded-xl p-6 border border-blue-100 shadow-sm">
+                <h3 class="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    ICD Coding (Standard WHO)
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if($medicalRecord->icd10_code)
+                    <div class="bg-white p-4 rounded-lg border border-blue-100">
+                        <h4 class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">ICD-10 Diagnosis</h4>
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 font-mono font-bold rounded">{{ $medicalRecord->icd10_code }}</span>
+                            <span class="text-gray-900 font-medium">{{ $medicalRecord->icd10_name }}</span>
+                        </div>
+                    </div>
+                    @endif
+                    
+                    @if($medicalRecord->icd9_code)
+                    <div class="bg-white p-4 rounded-lg border border-blue-100">
+                        <h4 class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">ICD-9 Procedure</h4>
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 font-mono font-bold rounded">{{ $medicalRecord->icd9_code }}</span>
+                            <span class="text-gray-900 font-medium">{{ $medicalRecord->icd9_name }}</span>
+                        </div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
 
             <!-- Vital Signs -->
             @if($medicalRecord->vital_signs)

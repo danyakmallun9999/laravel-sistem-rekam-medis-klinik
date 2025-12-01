@@ -40,6 +40,8 @@ class MedicalRecordFactory extends Factory
             ],
             'icd10_code' => fake()->regexify('[A-Z][0-9]{2}\.[0-9]'),
             'icd10_name' => fake()->words(3, true),
+            'icd9_code' => fake()->regexify('[0-9]{2}\.[0-9]{2}'),
+            'icd9_name' => fake()->words(2, true),
         ];
     }
 }

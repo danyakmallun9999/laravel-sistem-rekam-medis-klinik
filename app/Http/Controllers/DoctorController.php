@@ -35,6 +35,7 @@ class DoctorController extends Controller
             'specialization' => 'required|string|max:255',
             'phone' => 'required|string',
             'email' => 'required|email|unique:doctors,email',
+            'consultation_fee' => 'required|numeric|min:0',
         ]);
 
         Doctor::create($validated);
@@ -54,6 +55,7 @@ class DoctorController extends Controller
             'specialization' => 'required|string|max:255',
             'phone' => 'required|string',
             'email' => 'required|email|unique:doctors,email,' . $doctor->id,
+            'consultation_fee' => 'required|numeric|min:0',
         ]);
 
         $doctor->update($validated);

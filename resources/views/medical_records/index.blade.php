@@ -62,10 +62,10 @@
                                     <a href="{{ route('medical_records.edit', $record) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
                                 @endif
                                 @if(auth()->user()->hasRole('admin'))
-                                    <form action="{{ route('medical_records.destroy', $record) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this medical record? This action cannot be undone.');">
+                                    <form id="delete-form-{{ $record->id }}" action="{{ route('medical_records.destroy', $record) }}" method="POST" class="inline-block">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                        <button type="button" onclick="confirmDelete(event, 'delete-form-{{ $record->id }}')" class="text-red-600 hover:text-red-900">Delete</button>
                                     </form>
                                 @endif
                             </td>

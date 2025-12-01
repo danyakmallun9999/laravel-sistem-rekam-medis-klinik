@@ -44,28 +44,7 @@
                     @error('visit_date') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
-                <!-- ICD Coding -->
-                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                    <h3 class="text-lg font-medium text-blue-900 mb-4">ICD Coding</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="icd10_code" class="block text-sm font-medium text-gray-700">ICD-10 Code</label>
-                            <input type="text" name="icd10_code" id="icd10_code" value="{{ old('icd10_code') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. J00">
-                        </div>
-                        <div>
-                            <label for="icd10_name" class="block text-sm font-medium text-gray-700">ICD-10 Diagnosis Name</label>
-                            <input type="text" name="icd10_name" id="icd10_name" value="{{ old('icd10_name') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. Acute Nasopharyngitis">
-                        </div>
-                        <div>
-                            <label for="icd9_code" class="block text-sm font-medium text-gray-700">ICD-9 Code (Procedure)</label>
-                            <input type="text" name="icd9_code" id="icd9_code" value="{{ old('icd9_code') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. 89.07">
-                        </div>
-                        <div>
-                            <label for="icd9_name" class="block text-sm font-medium text-gray-700">ICD-9 Procedure Name</label>
-                            <input type="text" name="icd9_name" id="icd9_name" value="{{ old('icd9_name') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. Consultation">
-                        </div>
-                    </div>
-                </div>
+
 
                 <!-- Body Map -->
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
