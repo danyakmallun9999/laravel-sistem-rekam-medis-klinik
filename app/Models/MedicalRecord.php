@@ -32,10 +32,21 @@ class MedicalRecord extends Model
         'icd9_code',
         'icd9_name',
         'body_map_data',
+        'is_signed',
+        'signed_at',
+        'responsible_person_name',
+        'responsible_person_relationship',
+        'allergies',
+        'informed_consent_signed',
+        'discharge_status',
+        'referral_hospital',
     ];
 
     protected $casts = [
-        'visit_date' => 'date',
+        'visit_date' => 'datetime',
+        'is_signed' => 'boolean',
+        'signed_at' => 'datetime',
+        'informed_consent_signed' => 'boolean',
         'soap_data' => 'array',
         'vital_signs' => 'array',
         'clinical_analysis' => 'array',

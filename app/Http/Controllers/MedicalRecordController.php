@@ -65,7 +65,16 @@ class MedicalRecordController extends Controller
             'icd10_code' => 'nullable|string|max:255',
             'icd10_name' => 'nullable|string|max:255',
             'icd9_code' => 'nullable|string|max:255',
+            'icd10_name' => 'nullable|string|max:255',
+            'icd9_code' => 'nullable|string|max:255',
             'icd9_name' => 'nullable|string|max:255',
+            'responsible_person_name' => 'nullable|string|max:255',
+            'responsible_person_relationship' => 'nullable|string|max:255',
+            'allergies' => 'nullable|string',
+            'informed_consent_signed' => 'boolean',
+            'discharge_status' => 'nullable|string',
+            'referral_hospital' => 'nullable|string|required_if:discharge_status,Rujuk',
+            'is_signed' => 'boolean',
         ]);
 
         if ($request->hasFile('attachments')) {
@@ -84,6 +93,12 @@ class MedicalRecordController extends Controller
         // CDSS Analysis
         $record = new MedicalRecord($validated); // Temporary instance for analysis
         $validated['clinical_analysis'] = \App\Services\ClinicalDecisionSupportService::analyze($record);
+
+
+
+        if (isset($validated['is_signed']) && $validated['is_signed']) {
+            $validated['signed_at'] = now();
+        }
 
         $record = MedicalRecord::create($validated);
 
@@ -155,7 +170,16 @@ class MedicalRecordController extends Controller
             'icd10_code' => 'nullable|string|max:255',
             'icd10_name' => 'nullable|string|max:255',
             'icd9_code' => 'nullable|string|max:255',
+            'icd10_name' => 'nullable|string|max:255',
+            'icd9_code' => 'nullable|string|max:255',
             'icd9_name' => 'nullable|string|max:255',
+            'responsible_person_name' => 'nullable|string|max:255',
+            'responsible_person_relationship' => 'nullable|string|max:255',
+            'allergies' => 'nullable|string',
+            'informed_consent_signed' => 'boolean',
+            'discharge_status' => 'nullable|string',
+            'referral_hospital' => 'nullable|string|required_if:discharge_status,Rujuk',
+            'is_signed' => 'boolean',
         ]);
 
         if ($request->hasFile('attachments')) {
@@ -174,6 +198,12 @@ class MedicalRecordController extends Controller
         // CDSS Analysis
         $medicalRecord->fill($validated); // Fill with new data for analysis
         $validated['clinical_analysis'] = \App\Services\ClinicalDecisionSupportService::analyze($medicalRecord);
+
+
+
+        if (isset($validated['is_signed']) && $validated['is_signed'] && !$medicalRecord->is_signed) {
+            $validated['signed_at'] = now();
+        }
 
         $medicalRecord->update($validated);
 

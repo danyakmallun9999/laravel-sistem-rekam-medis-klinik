@@ -26,12 +26,32 @@
                         <div class="flex items-center gap-6 text-indigo-100">
                             <span class="flex items-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                {{ $medicalRecord->visit_date->format('d F Y') }}
+                                {{ $medicalRecord->visit_date->format('d F Y, H:i') }}
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Compliance & Safety Alerts -->
+            <!-- Compliance & Safety Alerts -->
+            @if($medicalRecord->allergies)
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mx-6 -mt-4 mb-6 shadow-sm rounded-r-lg">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-bold text-red-800 uppercase tracking-wide">Patient Allergies</h3>
+                        <p class="text-sm text-red-700 mt-1">
+                            {{ $medicalRecord->allergies }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <!-- Patient & Doctor Info Bar -->
             <div class="bg-gray-50 border-b border-gray-200 px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -60,9 +80,53 @@
             </div>
         </div>
 
+
+
         <!-- Main Content -->
         <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden p-6 sm:p-8 space-y-8">
             
+            <!-- Responsible Person & Discharge Info Cards -->
+            @if($medicalRecord->responsible_person_name || $medicalRecord->discharge_status)
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @if($medicalRecord->responsible_person_name)
+                <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        Responsible Person
+                    </h3>
+                    <div>
+                        <p class="text-sm text-gray-500 uppercase tracking-wider font-semibold mb-1">Name</p>
+                        <p class="font-bold text-gray-900 text-lg">{{ $medicalRecord->responsible_person_name }}</p>
+                        <p class="text-indigo-600 font-medium">{{ $medicalRecord->responsible_person_relationship }}</p>
+                    </div>
+                </div>
+                @endif
+
+                @if($medicalRecord->discharge_status)
+                <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-yellow-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        Discharge Information
+                    </h3>
+                    <div>
+                        <p class="text-sm text-yellow-800 uppercase tracking-wider font-semibold mb-1">Status</p>
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 rounded-full text-sm font-bold 
+                                {{ $medicalRecord->discharge_status == 'Sembuh' ? 'bg-green-100 text-green-800' : 
+                                   ($medicalRecord->discharge_status == 'Rujuk' ? 'bg-yellow-100 text-yellow-800' : 
+                                   ($medicalRecord->discharge_status == 'Meninggal' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800 border border-gray-200')) }}">
+                                {{ $medicalRecord->discharge_status }}
+                            </span>
+                            @if($medicalRecord->referral_hospital)
+                                <span class="text-yellow-900 font-medium">to {{ $medicalRecord->referral_hospital }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+            @endif
+
             <!-- AI Clinical Analysis -->
             @if($medicalRecord->clinical_analysis)
             <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100 shadow-sm">
@@ -113,6 +177,15 @@
                         <div class="flex items-center gap-3">
                             <span class="px-2 py-1 bg-blue-100 text-blue-800 font-mono font-bold rounded">{{ $medicalRecord->icd9_code }}</span>
                             <span class="text-gray-900 font-medium">{{ $medicalRecord->icd9_name }}</span>
+                        </div>
+                    </div>
+                    @endif
+                    
+                    @if($medicalRecord->informed_consent_signed)
+                    <div class="col-span-1 md:col-span-2 mt-2">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Informed Consent Signed
                         </div>
                     </div>
                     @endif
@@ -257,6 +330,27 @@
             </div>
             @endif
 
+            <!-- Electronic Signature Footer -->
+            <!-- Electronic Signature Footer -->
+            @if($medicalRecord->is_signed)
+            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200 shadow-sm flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-indigo-100 rounded-full text-indigo-600">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-900">Digitally Verified & Signed</h3>
+                        <p class="text-indigo-700 text-sm">This record has been electronically signed and verified.</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-indigo-500 uppercase tracking-wider font-semibold">Signed by</p>
+                    <p class="font-bold text-indigo-900 text-lg">{{ $medicalRecord->doctor->name }}</p>
+                    <p class="text-sm text-indigo-600 font-mono">{{ $medicalRecord->signed_at ? $medicalRecord->signed_at->format('d M Y • H:i:s') : '' }}</p>
+                </div>
+            </div>
+            @endif
+
             <!-- Actions -->
             <div class="pt-6 border-t border-gray-100 flex justify-end gap-3">
                 @if(auth()->user()->hasRole('admin') || ($medicalRecord->isLatestForPatient() && !auth()->user()->hasRole('front_office') && !auth()->user()->hasRole('doctor')))
@@ -282,26 +376,57 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Ensure Fabric is loaded
+        if (typeof fabric === 'undefined') {
+            console.error('Fabric.js not loaded');
+            return;
+        }
+
         const canvas = new fabric.Canvas('bodyMapCanvas', {
             isDrawingMode: false,
-            selection: false
+            selection: false,
+            width: 500,
+            height: 800,
+            backgroundColor: '#ffffff'
         });
 
         // Load Body Map Image
-        fabric.Image.fromURL('{{ asset("storage/body_map_outline.png") }}', function(img) {
+        const imageUrl = '{{ asset("storage/body-map.png") }}?t=' + new Date().getTime();
+        
+        console.log('Attempting to load body map image from:', imageUrl);
+
+        fabric.Image.fromURL(imageUrl, function(img) {
+            if (!img) {
+                console.error('Failed to load body map image');
+                return;
+            }
+
+            console.log('Body map image loaded successfully', img.width, img.height);
+
             const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
             img.set({
                 scaleX: scale,
                 scaleY: scale,
-                originX: 'left',
-                originY: 'top'
+                left: canvas.width / 2,
+                top: canvas.height / 2,
+                originX: 'center',
+                originY: 'center',
+                selectable: false,
+                evented: false,
+                excludeFromExport: false
             });
-            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            
+            // Add as a regular object but send to back
+            canvas.add(img);
+            canvas.sendToBack(img);
+            canvas.renderAll();
 
             // Load data
             const existingData = @json($medicalRecord->body_map_data);
             if (existingData) {
                 canvas.loadFromJSON(existingData, function() {
+                    // Ensure background image stays at back after loading JSON
+                    canvas.sendToBack(img);
                     canvas.renderAll();
                     // Disable interaction
                     canvas.getObjects().forEach(function(o) {
@@ -310,7 +435,7 @@
                     });
                 });
             }
-        });
+        }, { crossOrigin: 'anonymous' });
     });
 </script>
 @endif
