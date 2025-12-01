@@ -28,6 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::post('patients/{patient}/create-account', [\App\Http\Controllers\PatientController::class, 'createAccount'])->name('patients.create-account');
     Route::resource('patients', \App\Http\Controllers\PatientController::class);
     Route::resource('doctors', \App\Http\Controllers\DoctorController::class);
+    Route::group(['middleware' => ['role:admin|doctor']], function () {
+        Route::resource('schedules', \App\Http\Controllers\ScheduleController::class);
+    });
     Route::resource('medical_records', MedicalRecordController::class);
 
     // Pharmacy Routes

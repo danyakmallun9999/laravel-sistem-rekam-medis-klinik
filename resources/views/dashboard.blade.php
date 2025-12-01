@@ -69,6 +69,7 @@
                     </div>
                 </div>
 
+                @role('admin')
                 <!-- Total Revenue -->
                 <div class="bg-white overflow-hidden border border-gray-200 rounded-lg p-6">
                     <div class="flex items-center">
@@ -98,6 +99,7 @@
                         </div>
                     </div>
                 </div>
+                @endrole
             </div>
 
             <!-- Quick Actions -->
@@ -139,6 +141,20 @@
                             <p class="text-sm text-gray-500">Generate a new bill</p>
                         </div>
                     </a>
+
+                    @role('admin|doctor')
+                    <a href="{{ route('schedules.index') }}" class="flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
+                        <div class="p-2 bg-purple-100 rounded-lg text-purple-600 mr-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900">Manage Schedules</p>
+                            <p class="text-sm text-gray-500">Doctor availability</p>
+                        </div>
+                    </a>
+                    @endrole
                 </div>
             </div>
 
