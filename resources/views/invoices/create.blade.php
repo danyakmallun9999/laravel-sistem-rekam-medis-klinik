@@ -18,7 +18,9 @@
                             <select id="patient_id" name="patient_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
                                 <option value="">Select a patient</option>
                                 @foreach($patients as $patient)
-                                    <option value="{{ $patient->id }}">{{ $patient->name }}</option>
+                                    <option value="{{ $patient->id }}" {{ (isset($selectedPatientId) && $selectedPatientId == $patient->id) ? 'selected' : '' }}>
+                                        {{ $patient->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -29,7 +31,7 @@
                             <select id="appointment_id" name="appointment_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                 <option value="">None</option>
                                 @foreach($appointments as $appointment)
-                                    <option value="{{ $appointment->id }}">
+                                    <option value="{{ $appointment->id }}" {{ (isset($selectedAppointment) && $selectedAppointment->id == $appointment->id) ? 'selected' : '' }}>
                                         {{ $appointment->appointment_date->format('d M Y') }} - {{ $appointment->doctor->name }} ({{ $appointment->patient->name }})
                                     </option>
                                 @endforeach
@@ -80,7 +82,7 @@
     <script>
         function invoiceForm() {
             return {
-                items: [{ description: '', amount: '' }],
+                items: @json($prefilledItems ?? [['description' => '', 'amount' => '']]),
                 addItem() {
                     this.items.push({ description: '', amount: '' });
                 },

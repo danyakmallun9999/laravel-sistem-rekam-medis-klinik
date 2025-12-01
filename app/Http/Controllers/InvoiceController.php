@@ -18,14 +18,45 @@ class InvoiceController extends Controller
         return view('invoices.index', compact('invoices'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $patients = Patient::all();
-        $appointments = Appointment::where('status', 'completed')
-            ->doesntHave('invoice') // Assuming we add this relationship to Appointment later or handle it manually
+        // Get appointments that are waiting for payment or completed
+        $appointments = Appointment::whereIn('status', ['waiting_payment', 'completed'])
+            ->doesntHave('invoice')
+            ->with(['patient', 'doctor', 'medicalRecord.prescriptionItems.medicine'])
             ->get();
             
-        return view('invoices.create', compact('patients', 'appointments'));
+        $selectedAppointment = null;
+        $prefilledItems = [];
+        $selectedPatientId = null;
+
+        if ($request->has('appointment_id')) {
+            $selectedAppointment = Appointment::with(['patient', 'medicalRecord.prescriptionItems.medicine'])
+                ->find($request->appointment_id);
+                
+            if ($selectedAppointment) {
+                $selectedPatientId = $selectedAppointment->patient_id;
+                
+                // Add Consultation Fee
+                $prefilledItems[] = [
+                    'description' => 'Consultation Fee - ' . $selectedAppointment->doctor->specialization,
+                    'amount' => 50000 // Default fee, could be dynamic
+                ];
+
+                // Add Prescription Items
+                if ($selectedAppointment->medicalRecord && $selectedAppointment->medicalRecord->prescriptionItems) {
+                    foreach ($selectedAppointment->medicalRecord->prescriptionItems as $item) {
+                        $prefilledItems[] = [
+                            'description' => $item->medicine->name . ' (' . $item->quantity . ' items)',
+                            'amount' => $item->medicine->price * $item->quantity
+                        ];
+                    }
+                }
+            }
+        }
+            
+        return view('invoices.create', compact('patients', 'appointments', 'selectedAppointment', 'prefilledItems', 'selectedPatientId'));
     }
 
     public function store(Request $request)

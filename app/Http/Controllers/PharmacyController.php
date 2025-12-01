@@ -90,6 +90,14 @@ class PharmacyController extends Controller
             }
         }
 
-        return redirect()->route('pharmacy.prescriptions')->with('success', 'Prescription dispensed and stock updated.');
+        // Update status to waiting_payment
+        if ($record->appointment) {
+            $record->appointment->update(['status' => 'waiting_payment']);
+            if ($record->appointment->queue) {
+                $record->appointment->queue->update(['status' => 'waiting_payment']);
+            }
+        }
+
+        return redirect()->route('pharmacy.prescriptions')->with('success', 'Prescription dispensed. Patient sent to cashier.');
     }
 }

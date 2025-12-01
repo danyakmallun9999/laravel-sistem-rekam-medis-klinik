@@ -86,6 +86,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             PatientSeeder::class,
+            MedicineSeeder::class,
             // DoctorSeeder::class, // Removed generic doctor seeder
             MedicalRecordSeeder::class,
         ]);
