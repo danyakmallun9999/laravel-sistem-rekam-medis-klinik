@@ -105,11 +105,13 @@ class MedicalRecordController extends Controller
 
     public function edit(MedicalRecord $medicalRecord)
     {
-        if (auth()->user()->hasRole('front_office') || auth()->user()->hasRole('doctor')) {
-            abort(403, 'You are not authorized to edit medical records.');
-        }
-        if (!$medicalRecord->isLatestForPatient()) {
-            abort(403, 'Only the latest medical record for a patient can be edited.');
+        if (!auth()->user()->hasRole('admin')) {
+            if (auth()->user()->hasRole('front_office') || auth()->user()->hasRole('doctor')) {
+                abort(403, 'You are not authorized to edit medical records.');
+            }
+            if (!$medicalRecord->isLatestForPatient()) {
+                abort(403, 'Only the latest medical record for a patient can be edited.');
+            }
         }
 
         $patients = Patient::all();
@@ -120,11 +122,13 @@ class MedicalRecordController extends Controller
 
     public function update(Request $request, MedicalRecord $medicalRecord)
     {
-        if (auth()->user()->hasRole('front_office') || auth()->user()->hasRole('doctor')) {
-            abort(403, 'You are not authorized to edit medical records.');
-        }
-        if (!$medicalRecord->isLatestForPatient()) {
-            abort(403, 'Only the latest medical record for a patient can be edited.');
+        if (!auth()->user()->hasRole('admin')) {
+            if (auth()->user()->hasRole('front_office') || auth()->user()->hasRole('doctor')) {
+                abort(403, 'You are not authorized to edit medical records.');
+            }
+            if (!$medicalRecord->isLatestForPatient()) {
+                abort(403, 'Only the latest medical record for a patient can be edited.');
+            }
         }
 
         $validated = $request->validate([
@@ -183,6 +187,11 @@ class MedicalRecordController extends Controller
 
     public function destroy(MedicalRecord $medicalRecord)
     {
+        if (auth()->user()->hasRole('admin')) {
+            $medicalRecord->delete();
+            return redirect()->route('medical_records.index')->with('success', 'Medical Record deleted successfully.');
+        }
+
         // Medical records cannot be deleted by law
         abort(403, 'Deleting medical records is prohibited by law.');
     }

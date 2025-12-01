@@ -58,10 +58,16 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ Str::limit($record->diagnosis, 30) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('medical_records.show', $record) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
-                                @if($record->isLatestForPatient() && !auth()->user()->hasRole('front_office') && !auth()->user()->hasRole('doctor'))
+                                @if(auth()->user()->hasRole('admin') || ($record->isLatestForPatient() && !auth()->user()->hasRole('front_office') && !auth()->user()->hasRole('doctor')))
                                     <a href="{{ route('medical_records.edit', $record) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
                                 @endif
-                                {{-- Delete button removed as per legal requirements --}}
+                                @if(auth()->user()->hasRole('admin'))
+                                    <form action="{{ route('medical_records.destroy', $record) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this medical record? This action cannot be undone.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
