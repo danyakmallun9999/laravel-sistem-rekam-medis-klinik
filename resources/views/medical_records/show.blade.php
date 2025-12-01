@@ -276,7 +276,7 @@
                         Body Map
                     </h3>
                     <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 inline-block">
-                        <canvas id="bodyMapCanvas" width="500" height="800"></canvas>
+                        <canvas id="bodyMapCanvas" width="800" height="600" style="max-width: 100%; height: auto;"></canvas>
                     </div>
                 </div>
                 @endif
@@ -385,9 +385,8 @@
         const canvas = new fabric.Canvas('bodyMapCanvas', {
             isDrawingMode: false,
             selection: false,
-            width: 500,
-            height: 800,
-            backgroundColor: '#ffffff'
+            width: 800,
+            height: 600
         });
 
         // Load Body Map Image
@@ -403,39 +402,42 @@
 
             console.log('Body map image loaded successfully', img.width, img.height);
 
-            const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-            img.set({
+            // Calculate aspect ratio
+            const aspectRatio = img.height / img.width;
+            
+            // Set canvas width to a reasonable max (e.g., container width or fixed large width)
+            const newWidth = 800;
+            const newHeight = newWidth * aspectRatio;
+
+            // Resize canvas to match image aspect ratio
+            canvas.setDimensions({ width: newWidth, height: newHeight });
+
+            // Scale image to fit the new canvas dimensions exactly
+            const scale = newWidth / img.width;
+            
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
                 scaleX: scale,
                 scaleY: scale,
-                left: canvas.width / 2,
-                top: canvas.height / 2,
+                left: newWidth / 2,
+                top: newHeight / 2,
                 originX: 'center',
-                originY: 'center',
-                selectable: false,
-                evented: false,
-                excludeFromExport: false
+                originY: 'center'
             });
-            
-            // Add as a regular object but send to back
-            canvas.add(img);
-            canvas.sendToBack(img);
-            canvas.renderAll();
 
             // Load data
             const existingData = @json($medicalRecord->body_map_data);
             if (existingData) {
+                // We need to ensure the data is loaded AFTER the background is set and canvas resized
                 canvas.loadFromJSON(existingData, function() {
-                    // Ensure background image stays at back after loading JSON
-                    canvas.sendToBack(img);
-                    canvas.renderAll();
                     // Disable interaction
                     canvas.getObjects().forEach(function(o) {
                         o.selectable = false;
                         o.evented = false;
                     });
+                    canvas.renderAll();
                 });
             }
-        }, { crossOrigin: 'anonymous' });
+        });
     });
 </script>
 @endif

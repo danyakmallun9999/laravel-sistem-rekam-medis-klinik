@@ -114,7 +114,7 @@
                     <p class="text-sm text-gray-500 mb-4">Draw on the body map to indicate symptoms or injuries.</p>
                     
                     <div class="border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 p-4 flex justify-center overflow-hidden">
-                        <canvas id="bodyMapCanvas" width="500" height="800" class="shadow-sm rounded-lg bg-white"></canvas>
+                        <canvas id="bodyMapCanvas" width="800" height="600" class="shadow-sm rounded-lg" style="max-width: 100%; height: auto;"></canvas>
                     </div>
                     <input type="hidden" name="body_map_data" id="body_map_data" value="{{ old('body_map_data', json_encode($medicalRecord->body_map_data)) }}">
                 </div>
@@ -412,11 +412,11 @@
             }
 
             // Initialize Fabric Canvas
+            // Start with default dimensions, will be updated when image loads
             const canvas = new fabric.Canvas('bodyMapCanvas', {
                 isDrawingMode: true,
-                width: 500,
-                height: 800,
-                backgroundColor: '#ffffff'
+                width: 800,
+                height: 600
             });
 
             // Set drawing brush
@@ -429,43 +429,52 @@
             
             console.log('Attempting to load body map image from:', imageUrl);
 
-            fabric.Image.fromURL(imageUrl, function(img) {
-                if (!img) {
-                    console.error('Failed to load body map image');
-                    alert('Error: Failed to load body map image.');
-                    return;
-                }
-
-                console.log('Body map image loaded successfully', img.width, img.height);
-
-                const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-                img.set({
-                    scaleX: scale,
-                    scaleY: scale,
-                    left: canvas.width / 2,
-                    top: canvas.height / 2,
-                    originX: 'center',
-                    originY: 'center',
-                    selectable: false,
-                    evented: false,
-                    excludeFromExport: false
-                });
-                
-                // Add as a regular object but send to back
-                canvas.add(img);
-                canvas.sendToBack(img);
-                canvas.renderAll();
-
-                // Load existing drawing data if available
-                const existingData = @json($medicalRecord->body_map_data);
-                if (existingData) {
-                    canvas.loadFromJSON(existingData, function() {
-                        // Ensure background image stays at back after loading JSON
-                        canvas.sendToBack(img);
-                        canvas.renderAll();
+            function setCanvasBackground(url) {
+                fabric.Image.fromURL(url, function(img) {
+                    if (!img) {
+                        console.error('Failed to load body map image');
+                        alert('Error: Failed to load body map image. Please check your connection or try refreshing.');
+                        return;
+                    }
+    
+                    console.log('Body map image loaded successfully', img.width, img.height);
+    
+                    // Calculate aspect ratio
+                    const aspectRatio = img.height / img.width;
+                    
+                    // Set canvas width to a reasonable max (e.g., container width or fixed large width)
+                    const newWidth = 800;
+                    const newHeight = newWidth * aspectRatio;
+    
+                    // Resize canvas to match image aspect ratio
+                    canvas.setDimensions({ width: newWidth, height: newHeight });
+    
+                    // Scale image to fit the new canvas dimensions exactly
+                    const scale = newWidth / img.width;
+                    
+                    canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+                        scaleX: scale,
+                        scaleY: scale,
+                        left: newWidth / 2,
+                        top: newHeight / 2,
+                        originX: 'center',
+                        originY: 'center'
                     });
-                }
-            }, { crossOrigin: 'anonymous' });
+                    
+                    console.log('Canvas resized and background image set');
+    
+                    // Load existing drawing data if available
+                    const existingData = @json($medicalRecord->body_map_data);
+                    if (existingData) {
+                        // We need to ensure the data is loaded AFTER the background is set and canvas resized
+                        canvas.loadFromJSON(existingData, function() {
+                            canvas.renderAll();
+                        });
+                    }
+                });
+            }
+
+            setCanvasBackground(imageUrl);
 
             // Button Handlers
             document.getElementById('btn-draw').addEventListener('click', function() {
@@ -474,31 +483,8 @@
 
             document.getElementById('btn-clear').addEventListener('click', function() {
                 canvas.clear();
-                canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas));
-                
-                // Reload background
-                const imageUrl = '{{ asset("storage/body-map.png") }}?t=' + new Date().getTime();
-                
-                fabric.Image.fromURL(imageUrl, function(img) {
-                    if (!img) return;
-                    
-                    const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-                    img.set({
-                        scaleX: scale,
-                        scaleY: scale,
-                        left: canvas.width / 2,
-                        top: canvas.height / 2,
-                        originX: 'center',
-                        originY: 'center',
-                        selectable: false,
-                        evented: false,
-                        excludeFromExport: false
-                    });
-                    
-                    canvas.add(img);
-                    canvas.sendToBack(img);
-                    canvas.renderAll();
-                }, { crossOrigin: 'anonymous' });
+                // Re-set the background image after clearing
+                setCanvasBackground(imageUrl);
             });
 
             // Save to Hidden Input on Submit

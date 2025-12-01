@@ -114,7 +114,7 @@
                     <p class="text-sm text-gray-500 mb-4">Draw on the body map to indicate symptoms or injuries.</p>
                     
                     <div class="border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 p-4 flex justify-center overflow-hidden">
-                        <canvas id="bodyMapCanvas" width="500" height="800" class="shadow-sm rounded-lg bg-white"></canvas>
+                        <canvas id="bodyMapCanvas" width="800" height="600" class="shadow-sm rounded-lg" style="max-width: 100%; height: auto;"></canvas>
                     </div>
                     <input type="hidden" name="body_map_data" id="body_map_data">
                 </div>
@@ -390,11 +390,11 @@
             }
 
             // Initialize Fabric Canvas
+            // Start with default dimensions, will be updated when image loads
             const canvas = new fabric.Canvas('bodyMapCanvas', {
                 isDrawingMode: true,
-                width: 500,
-                height: 800,
-                backgroundColor: '#ffffff' // Ensure white background
+                width: 800, // Increased default width
+                height: 600
             });
 
             // Set drawing brush
@@ -403,42 +403,48 @@
             canvas.freeDrawingBrush.color = "red";
 
             // Load Body Map Image
-            // Use asset() helper to get the correct URL, and add a timestamp to prevent caching issues
             const imageUrl = '{{ asset("storage/body-map.png") }}?t=' + new Date().getTime();
             
             console.log('Attempting to load body map image from:', imageUrl);
 
-            fabric.Image.fromURL(imageUrl, function(img) {
-                if (!img) {
-                    console.error('Failed to load body map image object is null');
-                    alert('Error: Failed to load body map image.');
-                    return;
-                }
-                
-                console.log('Body map image loaded successfully', img.width, img.height);
+            function setCanvasBackground(url) {
+                fabric.Image.fromURL(url, function(img) {
+                    if (!img) {
+                        console.error('Failed to load body map image object is null');
+                        alert('Error: Failed to load body map image. Please check your connection or try refreshing.');
+                        return;
+                    }
+                    
+                    console.log('Body map image loaded successfully', img.width, img.height);
 
-                // Scale image to fit canvas
-                const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-                
-                img.set({
-                    scaleX: scale,
-                    scaleY: scale,
-                    left: canvas.width / 2,
-                    top: canvas.height / 2,
-                    originX: 'center',
-                    originY: 'center',
-                    selectable: false,
-                    evented: false,
-                    excludeFromExport: false // Ensure it's included in toJSON/toDataURL
-                });
+                    // Calculate aspect ratio
+                    const aspectRatio = img.height / img.width;
+                    
+                    // Set canvas width to a reasonable max (e.g., container width or fixed large width)
+                    // We'll use 800px as a base width for better resolution
+                    const newWidth = 800;
+                    const newHeight = newWidth * aspectRatio;
 
-                // Add as a regular object but send to back
-                canvas.add(img);
-                canvas.sendToBack(img);
-                canvas.renderAll();
-                
-                console.log('Image added to canvas and rendered');
-            }, { crossOrigin: 'anonymous' });
+                    // Resize canvas to match image aspect ratio
+                    canvas.setDimensions({ width: newWidth, height: newHeight });
+
+                    // Scale image to fit the new canvas dimensions exactly
+                    const scale = newWidth / img.width;
+                    
+                    canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+                        scaleX: scale,
+                        scaleY: scale,
+                        left: newWidth / 2,
+                        top: newHeight / 2,
+                        originX: 'center',
+                        originY: 'center'
+                    });
+                    
+                    console.log('Canvas resized to', newWidth, 'x', newHeight, 'and background image set');
+                }); 
+            }
+
+            setCanvasBackground(imageUrl);
 
             // Button Handlers
             document.getElementById('btn-draw').addEventListener('click', function() {
@@ -447,36 +453,14 @@
 
             document.getElementById('btn-clear').addEventListener('click', function() {
                 canvas.clear();
-                canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas)); // Reset background color
-                
-                // Reload background using the same robust method
-                const imageUrl = '{{ asset("storage/body-map.png") }}?t=' + new Date().getTime();
-                
-                fabric.Image.fromURL(imageUrl, function(img) {
-                    if (!img) return;
-                    
-                    const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-                    img.set({
-                        scaleX: scale,
-                        scaleY: scale,
-                        left: canvas.width / 2,
-                        top: canvas.height / 2,
-                        originX: 'center',
-                        originY: 'center',
-                        selectable: false,
-                        evented: false,
-                        excludeFromExport: false
-                    });
-                    
-                    canvas.add(img);
-                    canvas.sendToBack(img);
-                    canvas.renderAll();
-                }, { crossOrigin: 'anonymous' });
+                // Re-set the background image after clearing
+                setCanvasBackground(imageUrl);
             });
 
             // Save to Hidden Input on Submit
             document.querySelector('form').addEventListener('submit', function() {
                 const json = JSON.stringify(canvas.toJSON());
+                console.log('Submitting form. Body Map Data:', json);
                 document.getElementById('body_map_data').value = json;
             });
 
