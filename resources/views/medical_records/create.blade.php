@@ -261,7 +261,7 @@
                         Attachments (Lab/X-Ray)
                     </h3>
                     <div class="bg-gray-50 p-6 rounded-xl border-2 border-dashed border-gray-300 text-center hover:bg-gray-100 transition-colors cursor-pointer relative">
-                        <input type="file" name="attachments[]" id="attachments" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                        <input type="file" name="attachments[]" id="attachments" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileSelect(this)">
                         <div class="space-y-2 pointer-events-none">
                             <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -272,6 +272,9 @@
                             <p class="text-xs text-gray-500">PNG, JPG, PDF up to 2MB</p>
                         </div>
                     </div>
+                    
+                    <!-- Preview Container -->
+                    <div id="attachments-preview" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 hidden"></div>
                 </div>
 
                 <!-- ICD Coding -->
@@ -378,6 +381,87 @@
             </div>
         </form>
     </div>
+
+    <script>
+        const attachmentDt = new DataTransfer();
+
+        function handleFileSelect(input) {
+            if (input.files) {
+                Array.from(input.files).forEach(file => {
+                    attachmentDt.items.add(file);
+                });
+                
+                // Update input files
+                input.files = attachmentDt.files;
+                
+                // Render previews
+                renderPreviews();
+            }
+        }
+
+        function renderPreviews() {
+            const previewContainer = document.getElementById('attachments-preview');
+            previewContainer.innerHTML = '';
+            
+            if (attachmentDt.files.length > 0) {
+                previewContainer.classList.remove('hidden');
+                
+                Array.from(attachmentDt.files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    const isImage = file.type.startsWith('image/');
+
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.className = 'relative group p-2 border border-gray-200 rounded-lg bg-white';
+                        
+                        let content = '';
+                        if (isImage) {
+                            content = `<div class="w-full h-24 bg-gray-100 rounded-md overflow-hidden mb-2">
+                                        <img src="${e.target.result}" class="w-full h-full object-cover">
+                                       </div>`;
+                        } else {
+                            content = `<div class="w-full h-24 bg-gray-50 rounded-md flex items-center justify-center mb-2">
+                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                       </div>`;
+                        }
+
+                        div.innerHTML = `
+                            ${content}
+                            <button type="button" onclick="removeAttachment(${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                            <p class="text-xs text-gray-600 truncate">${file.name}</p>
+                            <p class="text-xs text-gray-400">${(file.size / 1024).toFixed(1)} KB</p>
+                        `;
+                        previewContainer.appendChild(div);
+                    }
+
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                previewContainer.classList.add('hidden');
+            }
+        }
+
+        function removeAttachment(index) {
+            const newDt = new DataTransfer();
+            Array.from(attachmentDt.files).forEach((file, i) => {
+                if (i !== index) {
+                    newDt.items.add(file);
+                }
+            });
+            
+            // Update global DataTransfer
+            attachmentDt.items.clear();
+            Array.from(newDt.files).forEach(file => attachmentDt.items.add(file));
+            
+            // Update input files
+            document.getElementById('attachments').files = attachmentDt.files;
+            
+            // Re-render
+            renderPreviews();
+        }
+    </script>
 
     <script src="{{ asset('js/fabric.min.js') }}"></script>
     <script>
