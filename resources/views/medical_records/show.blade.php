@@ -286,7 +286,7 @@
             @endif
 
                 <!-- Body Map -->
-                @if($medicalRecord->body_map_data)
+                <!-- Body Map -->
                 <div class="mb-8">
                     <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
@@ -296,7 +296,6 @@
                         <canvas id="bodyMapCanvas" width="800" height="600" style="max-width: 100%; height: auto;"></canvas>
                     </div>
                 </div>
-                @endif
 
             <!-- Attachments -->
             @if($medicalRecord->attachments)
@@ -389,13 +388,14 @@
     </div>
 </x-app-layout>
 
-@if($medicalRecord->body_map_data)
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+<script src="{{ asset('js/fabric.min.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Ensure Fabric is loaded
         if (typeof fabric === 'undefined') {
             console.error('Fabric.js not loaded');
+            const container = document.getElementById('bodyMapCanvas').parentNode;
+            container.innerHTML = '<div class="text-red-500 p-4 text-center font-bold">Error: Fabric.js failed to load.</div>';
             return;
         }
 
@@ -406,23 +406,24 @@
             height: 600
         });
 
-        // Load Body Map Image
-        const imageUrl = '{{ asset("storage/body-map.png") }}?t=' + new Date().getTime();
+        // Load Body Map Image using relative path
+        const imageUrl = '/storage/body-map.jpg?t=' + new Date().getTime();
         
         console.log('Attempting to load body map image from:', imageUrl);
 
-        fabric.Image.fromURL(imageUrl, function(img) {
-            if (!img) {
-                console.error('Failed to load body map image');
-                return;
-            }
-
-            console.log('Body map image loaded successfully', img.width, img.height);
-
+        // Load Body Map Image using native Image object for better control
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        
+        img.onload = function() {
+            console.log('Native image loaded successfully', img.width, img.height);
+            
+            const fabricImg = new fabric.Image(img);
+            
             // Calculate aspect ratio
             const aspectRatio = img.height / img.width;
             
-            // Set canvas width to a reasonable max (e.g., container width or fixed large width)
+            // Set canvas width to a reasonable max
             const newWidth = 800;
             const newHeight = newWidth * aspectRatio;
 
@@ -432,7 +433,7 @@
             // Scale image to fit the new canvas dimensions exactly
             const scale = newWidth / img.width;
             
-            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+            canvas.setBackgroundImage(fabricImg, canvas.renderAll.bind(canvas), {
                 scaleX: scale,
                 scaleY: scale,
                 left: newWidth / 2,
@@ -444,9 +445,7 @@
             // Load data
             const existingData = @json($medicalRecord->body_map_data);
             if (existingData) {
-                // We need to ensure the data is loaded AFTER the background is set and canvas resized
                 canvas.loadFromJSON(existingData, function() {
-                    // Disable interaction
                     canvas.getObjects().forEach(function(o) {
                         o.selectable = false;
                         o.evented = false;
@@ -454,7 +453,18 @@
                     canvas.renderAll();
                 });
             }
-        });
+        };
+
+        img.onerror = function(err) {
+            console.error('Failed to load body map image natively', err);
+            // Show error in UI
+            const container = document.getElementById('bodyMapCanvas').parentNode;
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'text-red-500 p-4 text-center font-bold';
+            errorMsg.textContent = 'Error: Failed to load body map image. Please check console for details.';
+            container.appendChild(errorMsg);
+        };
+
+        img.src = imageUrl;
     });
 </script>
-@endif

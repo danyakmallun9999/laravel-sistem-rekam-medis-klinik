@@ -401,13 +401,14 @@
         </form>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="{{ asset('js/fabric.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Ensure Fabric is loaded
             if (typeof fabric === 'undefined') {
                 console.error('Fabric.js not loaded');
-                alert('Error: Fabric.js library could not be loaded. Body map feature will not work.');
+                const container = document.getElementById('bodyMapCanvas').parentNode;
+                container.innerHTML = '<div class="text-red-500 p-4 text-center font-bold">Error: Fabric.js failed to load.</div>';
                 return;
             }
 
@@ -426,34 +427,34 @@
             canvas.freeDrawingBrush.color = "red";
 
             // Load Body Map Image
-            const imageUrl = '{{ asset("storage/body-map.png") }}?t=' + new Date().getTime();
+            const imageUrl = '/storage/body-map.jpg?t=' + new Date().getTime();
             
             console.log('Attempting to load body map image from:', imageUrl);
 
             function setCanvasBackground(url) {
-                fabric.Image.fromURL(url, function(img) {
-                    if (!img) {
-                        console.error('Failed to load body map image');
-                        alert('Error: Failed to load body map image. Please check your connection or try refreshing.');
-                        return;
-                    }
-    
-                    console.log('Body map image loaded successfully', img.width, img.height);
-    
+                // Load Body Map Image using native Image object for better control
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                img.onload = function() {
+                    console.log('Native image loaded successfully', img.width, img.height);
+                    
+                    const fabricImg = new fabric.Image(img);
+                    
                     // Calculate aspect ratio
                     const aspectRatio = img.height / img.width;
                     
-                    // Set canvas width to a reasonable max (e.g., container width or fixed large width)
+                    // Set canvas width to a reasonable max
                     const newWidth = 800;
                     const newHeight = newWidth * aspectRatio;
-    
+
                     // Resize canvas to match image aspect ratio
                     canvas.setDimensions({ width: newWidth, height: newHeight });
-    
+
                     // Scale image to fit the new canvas dimensions exactly
                     const scale = newWidth / img.width;
                     
-                    canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+                    canvas.setBackgroundImage(fabricImg, canvas.renderAll.bind(canvas), {
                         scaleX: scale,
                         scaleY: scale,
                         left: newWidth / 2,
@@ -463,7 +464,7 @@
                     });
                     
                     console.log('Canvas resized and background image set');
-    
+
                     // Load existing drawing data if available
                     const existingData = @json($medicalRecord->body_map_data);
                     if (existingData) {
@@ -472,7 +473,19 @@
                             canvas.renderAll();
                         });
                     }
-                });
+                };
+
+                img.onerror = function(err) {
+                    console.error('Failed to load body map image natively', err);
+                    // Show error in UI
+                    const container = document.getElementById('bodyMapCanvas').parentNode;
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'text-red-500 p-4 text-center font-bold';
+                    errorMsg.textContent = 'Error: Failed to load body map image. Please check console for details.';
+                    container.appendChild(errorMsg);
+                };
+
+                img.src = url;
             }
 
             setCanvasBackground(imageUrl);
