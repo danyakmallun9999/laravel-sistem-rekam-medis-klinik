@@ -22,7 +22,7 @@ Sistem ini memiliki berbagai modul yang terintegrasi:
 
 ## 🛠️ Teknologi yang Digunakan
 
-- **Backend**: [Laravel 10](https://laravel.com) (PHP Framework)
+- **Backend**: [Laravel 12](https://laravel.com) (PHP Framework)
 - **Frontend**: [Blade Templates](https://laravel.com/docs/blade), [Tailwind CSS](https://tailwindcss.com)
 - **Interaktivitas**: [Alpine.js](https://alpinejs.dev)
 - **Database**: MySQL
@@ -44,7 +44,7 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi di lingkungan lokal And
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/username/srme.git
+   git clone https://github.com/danyakmallun9999/srme.git
    cd srme
    ```
 
